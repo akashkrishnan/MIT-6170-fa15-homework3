@@ -1,0 +1,48 @@
+'use strict';
+
+console.log( '-------------\nInitializing.' );
+
+// Imports
+var Config = require( './config.js' );
+var domain = require( 'domain' );
+var express = require( 'express' );
+var compression = require( 'compression' );
+
+// Use domain to catch runtime errors and prevent termination of application
+
+var d = domain.create();
+
+d.on( 'error', function ( err ) {
+  console.error( err );
+} );
+
+d.run( function () {
+
+  // Structure the HTTP & WS servers
+  var app = express();
+  var server = require( 'http' ).createServer( app );
+  var io = require( 'socket.io' )( server );
+
+  // Configure Express
+  app.engine( '.ejs', require( 'ejs' ).renderFile );
+  app.set( 'trust proxy', true );
+  app.set( 'view engine', 'ejs' );
+  app.set( 'views', __dirname + '/source/templates' );
+  app.use( compression( { level: 9, memLevel: 9 } ) );
+  app.use( express.static( __dirname + '/public' ) );
+  app.use( express.static( __dirname + '/source/bower_components' ) );
+
+  console.log( 'READY: Express' );
+
+  // Set up handlers
+  require( './routes' )( app, io.sockets );
+  //io.sockets.on( 'connection', require( './sockets' )( io.sockets ) );
+
+  console.log( 'READY: Request Handlers' );
+
+  // Start the server
+  server.listen( Config.web.port, function () {
+    console.log( 'Listening on port ' + Config.web.port + '.' );
+  } );
+
+} );

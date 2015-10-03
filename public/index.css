@@ -1,0 +1,103 @@
+[masthead] {
+  line-height: 60px;
+  color: #FFFFFF;
+  background-color: #3F51B5;
+}
+
+[masthead] [name] {
+  padding-left: 16px;
+  font-size: 24px;
+}
+
+[content] {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+[login] {
+  margin: 10px;
+  width: 300px;
+}
+
+[login] [header] {
+  line-height: 40px;
+  padding-left: 16px;
+  padding-right: 16px;
+  font-size: 18px;
+  text-align: center;
+  vertical-align: middle;
+  color: #FFFFFF;
+  background-color: rgb(79, 125, 201);
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+
+[login] [text] {
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.065);
+  text-align: justify;
+}
+
+[login] [form] {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.065);
+}
+
+[login] [form] [input] {
+  margin: 16px 16px 0;
+}
+
+[login] [form] [input]:last-of-type {
+  margin-bottom: 12px;
+}
+
+[login] [form] [input] label {
+  line-height: 24px;
+  font-size: 12px;
+  color: #757575;
+  text-rendering: optimizeLegibility;
+}
+
+[login] [form] [input] input {
+  margin-bottom: 12px;
+  padding-bottom: 4px;
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  color: #212121;
+}
+
+[login] [buttons] [button] {
+  margin: 16px 0 16px 16px;
+}
+
+[login] [buttons] [button]:last-of-type {
+  margin-right: 16px;
+}
+
+[button] {
+  line-height: 40px;
+  border-radius: 3px;
+  text-align: center;
+  vertical-align: middle;
+  text-transform: uppercase;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+[button][register] {
+  color: #FFFFFF;
+  background-color: #72C02C;
+}
+
+[button][login] {
+  color: #FFFFFF;
+  background-color: #4285F4;
+}

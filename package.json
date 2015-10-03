@@ -1,0 +1,25 @@
+{
+  "name": "akashk16_proj3",
+  "version": "1.0.0",
+  "description": "akashk16_proj3",
+  "private": true,
+  "scripts": {
+    "bower": "./node_modules/.bin/bower",
+    "install": "npm run bower update --save && npm run bower install --save && npm install -g supervisor,mocha",
+    "test": "mocha",
+    "start": "supervisor -e js,json -i public,source -q server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.mit.edu:6170-fa15/akashk16_proj3.git"
+  },
+  "author": "Akash Krishnan",
+  "license": "MIT",
+  "dependencies": {
+    "bower": "^1.5.3",
+    "compression": "^1.6.0",
+    "ejs": "^2.3.4",
+    "express": "^4.13.3",
+    "socket.io": "^1.3.7"
+  }
+}
