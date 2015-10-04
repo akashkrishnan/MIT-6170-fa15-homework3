@@ -9,51 +9,37 @@ body, input {
   -webkit-font-smoothing: antialiased; /* OS X subpixel AA bleed bug */
 }
 
-h1, h2, h3, h4, h5, h6, p {
-  margin: 0 0 20px 0;
+div[masthead] {
+  line-height: 60px;
+  color: #FFFFFF;
+  background-color: #3F51B5;
 }
 
-h1, h2, h3, h4, h5, h6, a {
-  text-rendering: optimizeLegibility;
-}
-
-h1 {
-  font-size: 45px;
-  font-weight: 400;
-  letter-spacing: -.018em;
-  line-height: 48px;
-}
-
-h2 {
-  font-size: 34px;
-  font-weight: 400;
-  letter-spacing: -.01em;
-  line-height: 40px;
-}
-
-h3 {
+[masthead] [name] {
+  padding-left: 16px;
   font-size: 24px;
-  font-weight: 400;
-  letter-spacing: -.012em;
-  line-height: 32px;
 }
 
-h4 {
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 24px;
+[content] {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 
-h5, h6 {
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 24px;
-}
-
-a {
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.018em;
-  line-height: 24px;
+[button] {
+  line-height: 40px;
+  border-radius: 3px;
+  text-align: center;
+  vertical-align: middle;
   text-transform: uppercase;
+  text-decoration: none !important;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
