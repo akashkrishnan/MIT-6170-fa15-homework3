@@ -9,6 +9,10 @@ body, input {
   -webkit-font-smoothing: antialiased; /* OS X subpixel AA bleed bug */
 }
 
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px white inset;
+}
+
 div[masthead] {
   line-height: 56px;
   color: #FFFFFF;
