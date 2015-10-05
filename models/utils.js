@@ -22,10 +22,10 @@ function safeFn( fn ) {
   return function () {
     if ( arguments[ 0 ] ) {
       if ( arguments[ 0 ] instanceof Error ) {
-        //require( './logger.js' ).error( arguments[ 0 ] );
+        require( './logger.js' ).error( arguments[ 0 ] );
         arguments[ 0 ] = arguments[ 0 ].message;
       } else {
-        //require( './logger.js' ).error( new Error( arguments[ 0 ] ) );
+        require( './logger.js' ).error( new Error( arguments[ 0 ] ) );
       }
     }
     (fn || noop).apply( null, arguments );
