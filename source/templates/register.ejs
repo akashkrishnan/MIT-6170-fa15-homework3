@@ -80,23 +80,27 @@
 
         }, false );
 
+        /**
+         * Retrieves config data from server. Config data includes information on username and passwords constraints.
+         *
+         * @param {function()} done - callback function
+         */
         var loadConfig = function ( done ) {
 
           var xhr = new XMLHttpRequest();
 
-          xhr.onreadystatechange = function () {
-            if ( xhr.readyState === 4 ) {
-              try {
-                config = JSON.parse( xhr.response );
-                done();
-              } catch ( e ) {
-                console.error( 'Unable to retrieve configuration file.' );
-                alert( 'Unable to retrieve configuration file.' );
-              }
+          xhr.onload = function () {
+            config = xhr.response;
+            if ( config ) {
+              done();
+            } else {
+              console.error( 'Unable to retrieve configuration file. Server response invalid.' );
+              alert( 'Unable to retrieve configuration file. Server response invalid.' );
             }
           };
 
           xhr.open( 'GET', '/config.json', true );
+          xhr.responseType = 'json';
           xhr.send();
 
         };
@@ -155,6 +159,35 @@
           var data = new FormData();
           data.append( 'username', username );
           data.append( 'password', password );
+
+          var xhr = new XMLHttpRequest();
+
+          xhr.onload = function () {
+
+            var data = xhr.response;
+
+            if ( data ) {
+
+              if ( data.err ) {
+                console.error( data.err );
+                alert( data.err );
+              } else {
+
+                // Account has been registered; refresh the page to show new content
+                window.location.replace( '/' );
+
+              }
+
+            } else {
+              console.error( 'Unable to register account. Server response invalid.' );
+              alert( 'Unable to register account. Server response invalid.' );
+            }
+
+          };
+
+          xhr.open( 'POST', '/api/register', true );
+          xhr.responseType = 'json';
+          xhr.send( data );
 
         };
 
