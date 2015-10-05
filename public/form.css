@@ -1,0 +1,53 @@
+[form] [header] {
+  line-height: 40px;
+  padding-left: 16px;
+  padding-right: 16px;
+  font-size: 18px;
+  text-align: center;
+  vertical-align: middle;
+  color: #FFFFFF;
+  background-color: #4285F4;
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+
+[form] [text] {
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.065);
+  text-align: justify;
+}
+
+[form] [inputs] {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.065);
+}
+
+[form] [inputs] [input] {
+  margin: 16px 16px 0;
+}
+
+[form] [inputs] [input]:last-of-type {
+  margin-bottom: 24px;
+}
+
+[form] [inputs] [input] label {
+  line-height: 24px;
+  font-size: 12px;
+  color: #757575;
+  text-rendering: optimizeLegibility;
+}
+
+[form] [inputs] [input] input {
+  padding-bottom: 4px;
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  color: #212121;
+}
+
+[form] [buttons] [button] {
+  margin: 16px 0 16px 16px;
+}
+
+[form] [buttons] [button]:last-of-type {
+  margin-right: 16px;
+}

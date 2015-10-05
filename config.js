@@ -24,5 +24,27 @@ var Config = module.exports = {
         uri: 'localhost:27017/akashk16_proj3_' + ( process.env.branch || 'master' )
       }
     }
+  },
+  registration: {
+    username: {
+      length: {
+        min: 4,
+        max: 15
+      },
+      regex: {
+        valid: '^[A-Za-z0-9_]*$'
+      }
+    },
+    password: {
+      length: {
+        min: 8,
+        max: 32
+      },
+      regex: {
+        hasNumeral: '[0-9]',
+        hasUpper: '[A-Z]',
+        hasLower: '[a-z]'
+      }
+    }
   }
 };

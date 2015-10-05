@@ -1,6 +1,6 @@
 body {
   color: rgba(0, 0, 0, 0.870588);
-  background-color: #DDDDDD;
+  background-color: #F2F2F2;
 }
 
 body, input {
@@ -10,9 +10,9 @@ body, input {
 }
 
 div[masthead] {
-  line-height: 60px;
+  line-height: 56px;
   color: #FFFFFF;
-  background-color: #3F51B5;
+  background-color: #4285F4;
 }
 
 [masthead] [name] {
@@ -22,7 +22,7 @@ div[masthead] {
 
 [content] {
   position: absolute;
-  top: 60px;
+  top: 56px;
   left: 0;
   bottom: 0;
   right: 0;
