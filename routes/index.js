@@ -72,7 +72,7 @@ function registerAccount( req, res ) {
 
   // Ensure guest (i.e. no user)
   if ( !req.user ) {
-    
+
     // Register user by adding
     User.add( req.body, Utils.safeFn( function ( err, user ) {
       if ( err ) {
