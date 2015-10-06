@@ -68,6 +68,7 @@ function loginAccount( req, res ) {
               } else {
 
                 // TODO: we need to sign in the user
+                res.json( {} );
 
               }
             } )
@@ -106,6 +107,7 @@ function registerAccount( req, res ) {
               } else {
 
                 // TODO: we need to sign in the user
+                res.json( {} );
 
               }
             } )
