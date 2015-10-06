@@ -7,9 +7,13 @@ var mongojs = require( 'mongojs' );
 var db = mongojs( Config.services.db.mongodb.uri, [ 'mentions' ] );
 
 module.exports = {
+
+  //---------------EXTERNAL---------------//
+
   list: list,
   addAll: addAll,
   removeAll: removeAll
+
 };
 
 function list() {

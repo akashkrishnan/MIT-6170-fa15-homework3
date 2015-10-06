@@ -7,9 +7,13 @@ var mongojs = require( 'mongojs' );
 var db = mongojs( Config.services.db.mongodb.uri, [ 'hashtags' ] );
 
 module.exports = {
+
+  //---------------EXTERNAL---------------//
+
   list: list,
   addAll: addAll,
   removeAll: removeAll
+
 };
 
 function list() {
@@ -41,7 +45,7 @@ function addAll( data, done ) {
 
       // Ensure there is something to add
       if ( criteria.hashtags ) {
-        
+
         var bulk = db[ 'hashtags' ].initializeUnorderedBulkOp();
 
         // Add remove queries
