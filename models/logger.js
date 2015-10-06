@@ -22,5 +22,9 @@ function warn( msg ) {
 }
 
 function error( msg ) {
-  console.error( msg.toString().red );
+  if ( msg instanceof Error ) {
+    console.error( msg.stack.toString().red );
+  } else {
+    console.error( msg.toString().red );
+  }
 }

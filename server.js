@@ -4,6 +4,7 @@ console.log( '-------------\nInitializing.' );
 
 // Imports
 var Config = require( './config.js' );
+var Logger = require( './models/logger.js' );
 var domain = require( 'domain' );
 var express = require( 'express' );
 var compression = require( 'compression' );
@@ -13,7 +14,7 @@ var compression = require( 'compression' );
 var d = domain.create();
 
 d.on( 'error', function ( err ) {
-  console.error( err );
+  Logger.error( err );
 } );
 
 d.run( function () {

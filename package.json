@@ -7,6 +7,7 @@
     "bower": "./node_modules/.bin/bower",
     "install": "npm run bower update --save && npm run bower install --save && npm install -g supervisor,mocha",
     "test": "mocha",
+    "init": "node init.js",
     "start": "supervisor -e js,json -i public,source -q server.js"
   },
   "repository": {
@@ -22,6 +23,7 @@
     "ejs": "^2.3.4",
     "express": "^4.13.3",
     "mongojs": "^1.3.0",
+    "multiparty": "^4.1.2",
     "socket.io": "^1.3.7"
   }
 }
