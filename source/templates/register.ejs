@@ -29,6 +29,11 @@
           <div inputs layout-vertical>
 
             <div input layout-vertical>
+              <label>Full Name</label>
+              <input type="text" id="name"/>
+            </div>
+
+            <div input layout-vertical>
               <label>Username</label>
               <input type="text" id="username"/>
             </div>
@@ -94,8 +99,8 @@
             if ( config ) {
               done();
             } else {
-              console.error( 'Unable to retrieve configuration file. Server response invalid.' );
-              alert( 'Unable to retrieve configuration file. Server response invalid.' );
+              console.error( 'Unable to retrieve configuration file. Invalid server response.' );
+              alert( 'Unable to retrieve configuration file. Invalid server response.' );
             }
           };
 
@@ -112,9 +117,13 @@
             loadConfig( validate );
           } else {
 
+            var name = document.querySelector( '#name' ).value;
             var username = document.querySelector( '#username' ).value;
             var password = document.querySelector( '#password' ).value;
             var password_verify = document.querySelector( '#password_verify' ).value;
+
+            var nameMinLength = config.registration.name.length.min;
+            var nameMaxLength = config.registration.name.length.max;
 
             var usernameMinLength = config.registration.username.length.min;
             var usernameMaxLength = config.registration.username.length.max;
@@ -126,7 +135,11 @@
             var hasUpper = new RegExp( config.registration.password.regex.hasUpper ).test( password );
             var hasLower = new RegExp( config.registration.password.regex.hasLower ).test( password );
 
-            if ( username.length < usernameMinLength ) {
+            if ( name.length < nameMinLength ) {
+              alert( 'Full Name must contain at least ' + nameMinLength + ' characters.' );
+            } else if ( name.length > nameMaxLength ) {
+              alert( 'Full Name must contain at most ' + nameMaxLength + ' characters.' );
+            } else if ( username.length < usernameMinLength ) {
               alert( 'Username must contain at least ' + usernameMinLength + ' characters.' );
             } else if ( username.length > usernameMaxLength ) {
               alert( 'Username must contain at most ' + usernameMaxLength + ' characters.' );
@@ -147,16 +160,17 @@
             } else if ( !hasLower ) {
               alert( 'Password must contain at least one (1) lowercase English alphabet character (a-z).' );
             } else {
-              register( username, password );
+              register( name, username, password );
             }
 
           }
 
         };
 
-        var register = function ( username, password ) {
+        var register = function ( name, username, password ) {
 
           var data = new FormData();
+          data.append( 'name', name );
           data.append( 'username', username );
           data.append( 'password', password );
 
@@ -179,8 +193,8 @@
               }
 
             } else {
-              console.error( 'Unable to register account. Server response invalid.' );
-              alert( 'Unable to register account. Server response invalid.' );
+              console.error( 'Unable to register account. Invalid server response.' );
+              alert( 'Unable to register account. Invalid server response.' );
             }
 
           };

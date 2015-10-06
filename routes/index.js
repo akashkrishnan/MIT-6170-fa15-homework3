@@ -53,19 +53,25 @@ function registerAccount( req, res ) {
       if ( err ) {
         res.json( { err: err } );
       } else {
-        User.add(
-          {
-            username: fields.username[ 0 ],
-            password: fields.password[ 0 ]
-          },
-          Utils.safeFn( function ( err ) {
+        try {
+          User.add(
+            {
+              name: fields.name[ 0 ],
+              username: fields.username[ 0 ],
+              password: fields.password[ 0 ]
+            },
+            Utils.safeFn( function ( err ) {
 
-            // TODO: we need to sign in the user
+              // TODO: we need to sign in the user
 
-            res.json( { err: err } );
+              res.json( { err: err } );
 
-          } )
-        );
+            } )
+          );
+        } catch ( err ) {
+          Logger.error( err );
+          res.json( { err: err.toString() } );
+        }
       }
     } ) );
   } else {

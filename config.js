@@ -26,6 +26,12 @@ var Config = module.exports = {
     }
   },
   registration: {
+    name: {
+      length: {
+        min: 3,
+        max: 100
+      }
+    },
     username: {
       length: {
         min: 4,

@@ -204,6 +204,7 @@ function get( data, done ) {
  * Adds a user.
  *
  * @param {object} data
+ * @param {string} data.name - User.name
  * @param {string} data.username - User.username
  * @param {string} data.password - User.password
  * @param {addCallback} done - callback
@@ -212,6 +213,15 @@ function add( data, done ) {
   try {
 
     var criteria = Utils.validateObject( data, {
+      name: {
+        type: 'string',
+        filter: function ( name ) {
+          if ( name ) {
+            return name.trim();
+          }
+        },
+        required: true
+      },
       username: {
         type: 'string',
         filter: function ( username ) {
@@ -233,7 +243,7 @@ function add( data, done ) {
     } );
 
     // Make sure username and password are well-defined
-    validateCredentials( criteria.username, criteria.password, function ( err ) {
+    validateCredentials( criteria.name, criteria.username, criteria.password, function ( err ) {
       if ( err ) {
         done( err, null );
       } else {
@@ -261,6 +271,7 @@ function add( data, done ) {
               // Insert new user data into database
               db[ 'users' ].insert(
                 {
+                  name: criteria.name,
                   username: criteria.username,
                   salt: salt,
                   password: saltedPasswordHash,
@@ -299,15 +310,19 @@ function add( data, done ) {
  */
 
 /**
- * Checks to make sure username and password are well-defined and conform to the restrictions defined in the config
- * file.
+ * Checks to make sure name, username, and password are well-defined and conform to the restrictions defined in the
+ * config file.
  *
+ * @param {string} name - User.name
  * @param {string} username - User.username
  * @param {string} password - User.password
  * @param {validateCredentialsCallback} done - callback
  */
-function validateCredentials( username, password, done ) {
+function validateCredentials( name, username, password, done ) {
   try {
+
+    var nameMinLength = Config.registration.name.length.min;
+    var nameMaxLength = Config.registration.name.length.max;
 
     var usernameMinLength = Config.registration.username.length.min;
     var usernameMaxLength = Config.registration.username.length.max;
@@ -319,7 +334,11 @@ function validateCredentials( username, password, done ) {
     var hasUpper = new RegExp( Config.registration.password.regex.hasUpper ).test( password );
     var hasLower = new RegExp( Config.registration.password.regex.hasLower ).test( password );
 
-    if ( username.length < usernameMinLength ) {
+    if ( name.length < nameMinLength ) {
+      done( new Error( 'Name must contain at least ' + nameMinLength + ' characters.' ) );
+    } else if ( name.length > nameMaxLength ) {
+      done( new Error( 'Name must contain at most ' + nameMaxLength + ' characters.' ) );
+    } else if ( username.length < usernameMinLength ) {
       done( new Error( 'Username must contain at least ' + usernameMinLength + ' characters.' ) );
     } else if ( username.length > usernameMaxLength ) {
       done( new Error( 'Username must contain at most ' + usernameMaxLength + ' characters.' ) );
