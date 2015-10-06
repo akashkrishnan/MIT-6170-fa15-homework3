@@ -95,13 +95,16 @@
           var xhr = new XMLHttpRequest();
 
           xhr.onload = function () {
+
             config = xhr.response;
+
             if ( config ) {
               done();
             } else {
               console.error( 'Unable to retrieve configuration file. Invalid server response.' );
               alert( 'Unable to retrieve configuration file. Invalid server response.' );
             }
+
           };
 
           xhr.open( 'GET', '/config.json', true );
@@ -167,12 +170,20 @@
 
         };
 
+        /**
+         * Sends XHR to register user; if successful, user is automatically logged in and redirected to the homepage.
+         *
+         * @param {string} name
+         * @param {string} username
+         * @param {string} password
+         */
         var register = function ( name, username, password ) {
 
-          var data = new FormData();
-          data.append( 'name', name );
-          data.append( 'username', username );
-          data.append( 'password', password );
+          var data = {
+            name: name,
+            username: username,
+            password: password
+          };
 
           var xhr = new XMLHttpRequest();
 
@@ -200,8 +211,9 @@
           };
 
           xhr.open( 'POST', '/api/register', true );
+          xhr.setRequestHeader( 'Content-Type', 'application/json;charset=UTF-8' );
           xhr.responseType = 'json';
-          xhr.send( data );
+          xhr.send( JSON.stringify( data ) );
 
         };
 
