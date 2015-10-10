@@ -8,6 +8,7 @@
   border: none;
   outline: none;
   resize: none;
+  overflow: hidden;
 }
 
 [feed] {
