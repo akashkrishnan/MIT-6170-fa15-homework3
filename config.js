@@ -14,8 +14,7 @@ var Config = module.exports = {
     _base: function () {
       return Config.web.protocol + '://' + Config.web.hostname +
              ( Config.web.port === 80 ? '' : ':' + Config.web.port );
-    },
-    secret: 'thisissupersecret!!!'
+    }
   },
   services: {
     db: {
