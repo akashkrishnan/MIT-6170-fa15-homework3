@@ -1,19 +1,17 @@
 'use strict';
 
-var Config = require( '../config.js' );
-var Logger = require( '../models/logger.js' );
 var Utils = require( '../models/utils.js' );
 var Session = require( '../models/session.js' );
 var User = require( '../models/user.js' );
 
-module.exports = function () {
+module.exports = function ( name ) {
   return function ( req, res, next ) {
 
     // We required that the cookie-parser middleware is registered before this middleware
     if ( req.cookies ) {
 
       // Store apikey for convenience
-      req.apikey = req.cookies.apikey;
+      req.apikey = req.cookies[ name ];
 
       if ( req.apikey ) {
 
