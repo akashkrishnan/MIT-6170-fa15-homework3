@@ -4,6 +4,7 @@ var Config = require( '../config.js' );
 var Utils = require( '../models/utils.js' );
 var Session = require( '../models/session.js' );
 var User = require( '../models/user.js' );
+var Tweet = require( '../models/tweet.js' );
 
 module.exports = function ( app, sockets ) {
 
@@ -14,6 +15,7 @@ module.exports = function ( app, sockets ) {
   app.post( '/api/login', apiLogin );
   app.post( '/api/register', apiRegister );
   app.post( '/api/logout', apiLogout );
+  app.post( '/api/tweet', apiTweetAdd );
 
   //require( './public.js' )( app, sockets );
   //require( './guest.js' )( app, sockets );
@@ -128,7 +130,7 @@ function apiRegister( req, res ) {
     } ) );
 
   } else {
-    res.status( 400 ).json( { err: 'Bad Request: Unable to registered account because user is already logged in.' } );
+    res.status( 400 ).json( { err: 'Bad Request: User must be anonymous to process request.' } );
   }
 
 }
@@ -151,7 +153,30 @@ function apiLogout( req, res ) {
     } ) );
 
   } else {
-    res.status( 400 ).json( { err: 'Bad Request: User must be logged in to logout.' } );
+    res.status( 400 ).json( { err: 'Bad Request: User must be authenticated to process request.' } );
+  }
+
+}
+
+function apiTweetAdd( req, res ) {
+
+  // Ensure user
+  if ( req.user ) {
+
+    // Ensure some properties
+    req.body[ 'user._id' ] = req.user._id;
+
+    // Add tweet
+    Tweet.add( req.body, Utils.safeFn( function ( err, tweet ) {
+      if ( err ) {
+        res.json( { err: err } );
+      } else {
+        res.json( tweet );
+      }
+    } ) );
+
+  } else {
+    res.status( 400 ).json( { err: 'Bad Request: User must be authenticated to process request.' } );
   }
 
 }

@@ -151,21 +151,28 @@ function get( data, done ) {
  *
  * @param {object} data -
  * @param {string} data.user._id - User._id
- * @param {string} data.message - message of new tweet
+ * @param {string} data.text - message of new tweet
  * @param {addCallback} done - callback
  */
 function add( data, done ) {
   try {
 
-    var insertData = Utils.validateObject( data, {
-      'user._id': { type: 'string', required: true },
-      'message': { type: 'string', required: true }
+    var criteria = Utils.validateObject( data, {
+      'user._id': { type: 'string', required: true }
     } );
 
-    var mentions = extractMentions( insertData.message );
-    var hashtags = extractHashtags( insertData.message );
+    var insertData = Utils.validateObject( data, {
+      text: { type: 'string', required: true }
+    } );
+
+    var mentions = extractMentions( insertData.text );
+    var hashtags = extractHashtags( insertData.text );
 
     var now = new Date();
+
+    insertData.user = {
+      _id: criteria[ 'user._id' ]
+    };
 
     insertData.timestamps = {
       created: now,
@@ -174,41 +181,45 @@ function add( data, done ) {
     };
 
     // Ensure valid user
-    User.get( { _id: insertData._id }, function ( err ) {
+    User.get( { _id: insertData.user._id }, function ( err ) {
       if ( err ) {
         done( err, null );
       } else {
 
         // Insert into database
-        db[ 'tweet' ].insert( insertData, function ( err, tweet ) {
+        db[ 'tweets' ].insert( insertData, function ( err, tweet ) {
+          if ( err ) {
+            done( err )
+          } else {
 
-          // Add mentions
-          Mention.add(
-            {
-              'tweet._id': tweet._id,
-              mentions: mentions
-            },
-            Utils.safeFn( function () {
+            // Add mentions
+            Mention.addAll(
+              {
+                'tweet._id': tweet._id,
+                mentions: mentions
+              },
+              Utils.safeFn( function () {
 
-              // NOTE: Continue even if an error occurred
+                // NOTE: Continue even if an error occurred
 
-              // Add hashtags
-              Hashtag.add(
-                {
-                  'tweet._id': tweet._id,
-                  hashtags: hashtags
-                },
-                Utils.safeFn( function () {
+                // Add hashtags
+                Hashtag.addAll(
+                  {
+                    'tweet._id': tweet._id,
+                    hashtags: hashtags
+                  },
+                  Utils.safeFn( function () {
 
-                  // NOTE: Continue even if an error occurred
-                  done( null, tweet, mentions, hashtags );
+                    // NOTE: Continue even if an error occurred
+                    done( null, tweet, mentions, hashtags );
 
-                } )
-              );
+                  } )
+                );
 
-            } )
-          );
+              } )
+            );
 
+          }
         } );
 
       }

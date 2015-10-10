@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <title><%= web.name %></title>
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
-    <link rel="stylesheet" type="text/css" href="/global.css">
-    <link rel="stylesheet" type="text/css" href="/layout.css">
-    <link rel="stylesheet" type="text/css" href="/shadow.css">
-    <link rel="stylesheet" type="text/css" href="/form.css">
-    <link rel="stylesheet" type="text/css" href="/home.css">
+    <link rel="stylesheet" type="text/css" href="/styles/global.css">
+    <link rel="stylesheet" type="text/css" href="/styles/layout.css">
+    <link rel="stylesheet" type="text/css" href="/styles/shadow.css">
+    <link rel="stylesheet" type="text/css" href="/styles/form.css">
+    <link rel="stylesheet" type="text/css" href="/styles/home.css">
   </head>
 
   <body fullbleed fit>
@@ -27,7 +27,19 @@
           </div>
 
           <div feed shadow elevation="1">
-            tweet
+
+            <div tweet layout-vertical>
+
+              <div header layout-horizontal>
+                <span author-name>Akash Krishnan</span>
+                <a author-handle href="/akashkrishnan">@akashkrishnan</a>
+                <span time>now</span>
+              </div>
+
+              <div text>This is some simple sample signature content.</div>
+
+            </div>
+
           </div>
 
         </div>
@@ -35,12 +47,30 @@
     </div>
 
     <script src="./autoresize-textarea.js"></script>
+    <script src="./fritter.js"></script>
 
     <script>
 
       (function () {
 
+        var fritter = Fritter();
+
         var textarea = AutoresizeTextarea( document.querySelector( 'textarea[tweet-input]' ) );
+        textarea.addSubmitListener( function ( text ) {
+          fritter.tweet.add( { text: text }, function ( err, tweet ) {
+            if ( err ) {
+              console.error( err );
+              alert( err );
+            } else {
+              textarea.clear();
+              addTweet( tweet );
+            }
+          } );
+        } );
+
+        var addTweet = function ( tweet ) {
+          console.log( tweet );
+        };
 
       })();
 
