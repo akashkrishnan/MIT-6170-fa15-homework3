@@ -3,7 +3,7 @@ body {
   background-color: #F2F2F2;
 }
 
-body, input {
+body, input, textarea {
   font-family: 'Roboto', sans-serif;
   font-size: 16px;
   -webkit-font-smoothing: antialiased; /* OS X subpixel AA bleed bug */
@@ -14,7 +14,7 @@ input:-webkit-autofill {
 }
 
 div[masthead] {
-  line-height: 56px;
+  line-height: 46px;
   color: #FFFFFF;
   background-color: #4285F4;
 }

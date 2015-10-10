@@ -1,0 +1,16 @@
+[compose-tweet] {
+  width: 600px;
+  margin: 5px;
+}
+
+[compose-tweet] textarea {
+  padding: 16px;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+[feed] {
+  width: 600px;
+  margin: 5px;
+}

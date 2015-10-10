@@ -3,7 +3,7 @@
 var Config = module.exports = {
   verbose: !!process.env.verbose,
   web: {
-    name: 'akashk16_proj3',
+    name: 'Fritter',
     version: '1.0.0',
     cookie: {
       name: 'apikey'

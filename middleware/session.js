@@ -34,12 +34,12 @@ module.exports = function () {
               } else {
 
                 /**
-                 * Store the User._id for future user; this will serve as a valid authority.
+                 * Store the User object for convenience; this will serve as a valid authority.
                  *
-                 * NOTE: We do not want to store the actual object because the data is subject to change and do not
-                 * want to tempt developers to take shortcuts. It's best to query the User model for the latest data.
+                 * NOTE: Although the User object is stored, its data is subject to change, and we do not want to tempt
+                 * developers to take shortcuts. It's best to query the User model for the latest data.
                  */
-                req.user = user._id;
+                req.user = user;
 
                 next();
 

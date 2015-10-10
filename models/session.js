@@ -96,12 +96,45 @@ function add( data, done ) {
   }
 }
 
+/**
+ * @callback removeCallback
+ * @param {Error} err - Error object
+ * @param {object} session - removed Session object
+ */
+
+/**
+ * Removes a session from the database.
+ *
+ * @param {object} data -
+ * @param {string} data._id - Session._id
+ * @param {removeCallback} done - callback
+ */
 function remove( data, done ) {
   try {
 
-    done( new Error( 'Not implemented.' ) );
+    var criteria = Utils.validateObject( data, {
+      _id: { type: 'string', required: true }
+    } );
+
+    // Ensure valid session
+    get( criteria, function ( err, session ) {
+      if ( err ) {
+        done( err, null );
+      } else {
+
+        // Remove from database
+        db[ 'sessions' ].remove( criteria, true, function ( err ) {
+          if ( err ) {
+            done( err, null );
+          } else {
+            done( null, session );
+          }
+        } );
+
+      }
+    } );
 
   } catch ( err ) {
-    done( err );
+    done( err, null );
   }
 }
