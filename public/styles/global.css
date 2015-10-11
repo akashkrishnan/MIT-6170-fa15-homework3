@@ -24,6 +24,42 @@ div[masthead] {
   font-size: 24px;
 }
 
+[masthead] [home] {
+  line-height: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: 10px;
+  z-index: 10;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+}
+
+[masthead] #search {
+  height: 30px;
+  width: 250px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-right: 10px;
+  z-index: 10;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+}
+
+[masthead] [logout] {
+  line-height: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-right: 10px;
+  z-index: 10;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+}
+
 [content] {
   position: absolute;
   top: 56px;

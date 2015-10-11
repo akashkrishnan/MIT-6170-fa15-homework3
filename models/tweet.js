@@ -6,6 +6,7 @@ var User = require( './user.js' );
 var Mention = require( './mention.js' );
 var Hashtag = require( './Hashtag.js' );
 var mongojs = require( 'mongojs' );
+var htmlEscape = require( 'escape-html' );
 
 var db = mongojs( Config.services.db.mongodb.uri, [ 'tweets' ] );
 

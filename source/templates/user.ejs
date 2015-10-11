@@ -14,8 +14,22 @@
 
   <body fullbleed fit>
 
-    <div masthead shadow elevation="1">
+    <div masthead layout-horizontal layout-center shadow elevation="1">
+
       <div name><strong><%= web.name %></strong></div>
+
+      <div home>
+        <div>Home</div>
+      </div>
+
+      <div flex></div>
+
+      <input id="search" placeholder="Enter username to view profile..."/>
+
+      <div logout>
+        <div>Logout</div>
+      </div>
+
     </div>
 
     <div content>
@@ -57,7 +71,19 @@
 
       (function () {
 
-        // ...
+        document.querySelector( '[home]' ).addEventListener( 'click', function ( e ) {
+          window.location.replace( '/' );
+        } );
+
+        document.querySelector( '#search' ).addEventListener( 'keydown', function ( e ) {
+          if ( e.keyCode === 13 ) {
+            window.location.replace( '/' + e.target.value );
+          }
+        } );
+
+        document.querySelector( '[logout]' ).addEventListener( 'click', function ( e ) {
+          window.location.replace( '/logout' );
+        } );
 
       })();
 
