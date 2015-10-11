@@ -16,8 +16,27 @@ module.exports = {
 
 };
 
-function list() {
+/**
+ * @callback listCallback
+ * @param {Error} err - Error object
+ * @param {Array.<object>} hashtags - list of hashtags
+ * @param {number} count -
+ */
 
+/**
+ * Gets a list of hashtags.
+ *
+ * @param {object} data -
+ * @param {listCallback} done - callback
+ */
+function list( data, done ) {
+  try {
+
+    done( 'Not Implemented.' );
+
+  } catch ( err ) {
+    done( err );
+  }
 }
 
 /**
@@ -44,7 +63,7 @@ function addAll( data, done ) {
     if ( criteria.hashtags instanceof Array ) {
 
       // Ensure there is something to add
-      if ( criteria.hashtags ) {
+      if ( criteria.hashtags.length ) {
 
         var bulk = db[ 'hashtags' ].initializeUnorderedBulkOp();
 

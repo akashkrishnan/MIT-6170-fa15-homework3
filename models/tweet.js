@@ -195,7 +195,7 @@ function add( data, done ) {
             // Add mentions
             Mention.addAll(
               {
-                'tweet._id': tweet._id,
+                'tweet._id': tweet._id.toString(),
                 mentions: mentions
               },
               Utils.safeFn( function () {
@@ -205,7 +205,7 @@ function add( data, done ) {
                 // Add hashtags
                 Hashtag.addAll(
                   {
-                    'tweet._id': tweet._id,
+                    'tweet._id': tweet._id.toString(),
                     hashtags: hashtags
                   },
                   Utils.safeFn( function () {
@@ -301,9 +301,9 @@ function remove( data, done ) {
  * @returns {*|Boolean|Array|{index: number, input: string}}
  */
 function extractMentions( msg ) {
-  return msg.match( /\B@[a-z0-9_-]+/gi );
+  return msg.match( /\B@[a-z0-9_-]+/gi ) || [];
 }
 
 function extractHashtags( msg ) {
-  return msg.match( /\S*#(?:\[[^\]]+\]|\S+)/gi );
+  return msg.match( /\S*#(?:\[[^\]]+\]|\S+)/gi ) || [];
 }

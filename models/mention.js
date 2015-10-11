@@ -16,8 +16,27 @@ module.exports = {
 
 };
 
-function list() {
+/**
+ * @callback listCallback
+ * @param {Error} err - Error object
+ * @param {Array.<object>} mentions - list of mentions
+ * @param {number} count -
+ */
 
+/**
+ * Gets a list of mentions.
+ *
+ * @param {object} data -
+ * @param {listCallback} done - callback
+ */
+function list( data, done ) {
+  try {
+
+    done( 'Not Implemented.' );
+
+  } catch ( err ) {
+    done( err );
+  }
 }
 
 /**
@@ -44,7 +63,7 @@ function addAll( data, done ) {
     if ( criteria.mentions instanceof Array ) {
 
       // Ensure there is something to add
-      if ( criteria.mentions ) {
+      if ( criteria.mentions.length ) {
 
         var bulk = db[ 'mentions' ].initializeUnorderedBulkOp();
 
