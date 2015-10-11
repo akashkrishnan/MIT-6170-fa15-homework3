@@ -1,39 +1,180 @@
-var assert = require("assert");
+'use strict';
 
-// Array is the module under test.
-describe('Array', function() {
-  // indexOf is the method under test.
-  describe('#indexOf()', function () {
-    
-    // This is a test, we indicate what we're testing for.
-    it('should return -1 when the value is not present', function () {
-      assert.equal(-1, [1,2,3].indexOf(5));
-      assert.equal(-1, [1,2,3].indexOf(0));
-    });
+var User = require( '../models/user.js' );
+var Tweet = require( '../models/tweet.js' );
+var assert = require( 'assert' );
 
+describe( 'User', function () {
 
-    // Another test.
-    it('should find values that exist', function() {
-      assert.equal(0, [1, 2, 3].indexOf(1));
-      assert.equal(2, [1, 2, 3].indexOf(3));
-    });
+  describe( '#add', function () {
 
-  }); // End describe indexOf.
+    it( 'adding correctly should throw no error', function () {
+      User.add(
+        {
+          name: 'tester',
+          username: 'tester',
+          password: 'asdfASDF1234!@#$'
+        },
+        function ( err, user ) {
+          assert( !err );
+        }
+      );
+    } );
 
-  // map is the method under test.
-  describe('#map', function() {
-    
-    // This is a test.
-    it('should map values given a function', function() {
-      assert.deepEqual([2, 4, 6], [1, 2, 3].map(function(x) { return 2 * x; }));
-    });
+    it( 'adding with duplicate name should throw error', function () {
+      User.add(
+        {
+          name: 'tester',
+          username: 'tester',
+          password: 'asdfASDF1234!@#$'
+        },
+        function ( err, user ) {
+          assert( !!err );
+        }
+      );
+    } );
 
+    it( 'adding with same username and password should throw error', function () {
+      User.add(
+        {
+          name: 'tester',
+          username: 'tester',
+          password: 'tester'
+        },
+        function ( err, user ) {
+          assert( !!err );
+        }
+      );
+    } );
 
-    // Another test.
-    it('should work on empty arrays', function() {
-      assert.deepEqual([], [].map(function(x) { return 2 * x; }));
-    });
+    it( 'invalid password', function () {
+      User.add(
+        {
+          name: 'tester',
+          username: 'tester',
+          password: 'asdf'
+        },
+        function ( err, user ) {
+          assert( !!err );
+        }
+      );
+    } );
 
-  }); // End describe map.
+  } );
 
-}); // End describe Array.
+  describe( '#get', function () {
+
+    it( 'getting user by username that does not exist', function () {
+      User.add(
+        {
+          username: 'tester2'
+        },
+        function ( err, user ) {
+          assert( !!err );
+        }
+      );
+    } );
+
+    it( 'getting user by id that does not exist', function () {
+      User.add(
+        {
+          _id: 'tester2'
+        },
+        function ( err, user ) {
+          assert( !!err );
+        }
+      );
+    } );
+
+    it( 'getting user by username that does exist', function () {
+      User.add(
+        {
+          username: 'tester'
+        },
+        function ( err, user ) {
+          assert( !err );
+        }
+      );
+    } );
+
+    it( 'getting user by username and invalid password that does exist', function () {
+      User.add(
+        {
+          username: 'tester',
+          password: 'tester'
+        },
+        function ( err, user ) {
+          assert( !!err );
+        }
+      );
+    } );
+
+    it( 'getting user by username and password that does exist', function () {
+      User.add(
+        {
+          username: 'tester',
+          password: 'asdfASDF1234!@#$'
+        },
+        function ( err, user ) {
+          assert( !err );
+        }
+      );
+    } );
+
+  } );
+
+} );
+
+describe( 'Tweet', function () {
+
+  describe( '#add', function () {
+
+    it( 'adding multiple tweets', function () {
+
+      Tweet.add( { text: 'test' }, function ( err, tweet ) {
+        assert( !err );
+        assert( tweet.text === 'test' );
+      } );
+
+      Tweet.add( { text: 'test' }, function ( err, tweet ) {
+        assert( !err );
+        assert( tweet.text === 'test' );
+      } );
+
+      Tweet.add( { text: 'test' }, function ( err, tweet ) {
+        assert( !err );
+        assert( tweet.text === 'test' );
+      } );
+
+    } );
+
+  } );
+
+  describe( '#add', function () {
+
+    it( 'adding and getting tweet', function () {
+
+      Tweet.add( { text: 'test' }, function ( err, tweet ) {
+        Tweet.get( { _id: tweet._id }, function ( err, tweet ) {
+          assert( !err );
+          assert( tweet.text === 'test' );
+        } );
+      } );
+
+    } );
+
+  } );
+
+  describe( '#list', function () {
+
+    it( 'checking list length of tweets', function () {
+
+      Tweet.list( {}, function ( err, tweets, count ) {
+        assert( count === 4 );
+      } );
+
+    } );
+
+  } );
+
+} );
