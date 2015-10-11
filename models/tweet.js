@@ -4,7 +4,7 @@ var Config = require( '../config.js' );
 var Utils = require( './utils.js' );
 var User = require( './user.js' );
 var Mention = require( './mention.js' );
-var Hashtag = require( './Hashtag.js' );
+var Hashtag = require( './hashtag.js' );
 var mongojs = require( 'mongojs' );
 var htmlEscape = require( 'escape-html' );
 
@@ -170,6 +170,8 @@ function add( data, done ) {
     var hashtags = extractHashtags( insertData.text );
 
     var now = new Date();
+
+    insertData.text = htmlEscape( insertData.text );
 
     insertData.user = {
       _id: criteria[ 'user._id' ]
