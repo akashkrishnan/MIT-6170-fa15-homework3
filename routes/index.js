@@ -34,10 +34,26 @@ function config( req, res ) {
 
 function index( req, res ) {
   if ( req.user ) {
-    res.render( 'home', {
-      web: Config.web,
-      user: req.user
-    } );
+
+    // Get tweets
+    Tweet.list(
+      {
+        'user._id': req.user._id,
+        limit: 20
+      },
+      Utils.safeFn( function ( err, tweets ) {
+        if ( err ) {
+          res.json( { err: err } );
+        } else {
+          res.render( 'home', {
+            web: Config.web,
+            user: req.user,
+            tweets: tweets
+          } );
+        }
+      } )
+    );
+
   } else {
     res.render( 'login', {
       web: Config.web

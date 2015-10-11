@@ -28,33 +28,23 @@
 
           <div feed shadow elevation="1">
 
-            <div id="asdf" tweet layout-vertical>
+            <% tweets.forEach( function( tweet ) { %>
+
+            <div id="<%= tweet._id %>" tweet layout-vertical>
 
               <div header layout-horizontal>
-                <span author-name><strong>Akash Krishnan</strong></span>
-                <a author-handle href="/akashkrishnan">@akashkrishnan</a>
-                <span time>now</span>
+                <span author-name><strong><%= tweet.user.name %></strong></span>
+                <a author-handle href="/<%= tweet.user.username %>">@<%= tweet.user.username %></a>
+                <span time><%= tweet.timestamps.created %></span>
                 <span flex></span>
                 <span remove-tweet>X</span>
               </div>
 
-              <div text>This is some simple sample signature content.</div>
+              <div text><%= tweet.text %></div>
 
             </div>
 
-            <div tweet layout-vertical>
-
-              <div header layout-horizontal>
-                <span author-name><strong>Akash Krishnan</strong></span>
-                <a author-handle href="/akashkrishnan">@akashkrishnan</a>
-                <span time>now</span>
-              </div>
-
-              <div text>#Daredevil star @jonnybernthal dishes on his version of The Punisher at #NYCC:
-                        http://ow.ly/Tg2n0
-              </div>
-
-            </div>
+            <% } ); %>
 
           </div>
 
@@ -111,7 +101,7 @@
           html += '<div header layout-horizontal>';
           html += '<span author-name><strong>' + tweet.user.name + '</strong></span>';
           html += '<a author-handle href="/' + tweet.user.username + '">@' + tweet.user.username + '</a>';
-          html += '<span time>' + tweet.timestamps.create + '</span>';
+          html += '<span time>' + tweet.timestamps.created + '</span>';
           html += '<span flex></span>';
           html += '<span remove-tweet>X</span>';
           html += '</div>';

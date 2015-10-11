@@ -21,6 +21,10 @@
   margin-right: 4px;
 }
 
+[feed] [tweet] [header] [time] {
+  display: none;
+}
+
 [feed] [tweet] [header] [remove-tweet] {
   cursor: pointer;
 }

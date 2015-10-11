@@ -44,7 +44,7 @@ function list( data, done ) {
   try {
 
     var criteria = Utils.validateObject( data, {
-      'user._id': { filter: 'MongoId', required: true }
+      'user._id': { type: 'string', required: true }
     } );
 
     var projection = Utils.validateObject( data, {
