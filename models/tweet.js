@@ -262,13 +262,13 @@ function remove( data, done ) {
       } else {
 
         // Remove associated mentions
-        Mention.removeAll( { 'tweet._id': tweet._id }, function ( err ) {
+        Mention.removeAll( { 'tweet._id': tweet._id.toString() }, function ( err ) {
           if ( err ) {
             done( err, null );
           } else {
 
             // Remove associated hashtags
-            Hashtag.removeAll( { 'tweet._id': tweet._id }, function ( err ) {
+            Hashtag.removeAll( { 'tweet._id': tweet._id.toString() }, function ( err ) {
               if ( err ) {
                 done( err, null );
               } else {
@@ -292,7 +292,7 @@ function remove( data, done ) {
     } );
 
   } catch ( err ) {
-    done( err );
+    done( err, null );
   }
 }
 

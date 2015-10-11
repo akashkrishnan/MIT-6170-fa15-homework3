@@ -16,6 +16,7 @@ module.exports = function ( app, sockets ) {
   app.post( '/api/register', apiRegister );
   app.post( '/api/logout', apiLogout );
   app.post( '/api/tweet', apiTweetAdd );
+  app.delete( '/api/tweet/:_id', apiTweetRemove );
 
   //require( './public.js' )( app, sockets );
   //require( './guest.js' )( app, sockets );
@@ -168,6 +169,29 @@ function apiTweetAdd( req, res ) {
 
     // Add tweet
     Tweet.add( req.body, Utils.safeFn( function ( err, tweet ) {
+      if ( err ) {
+        res.json( { err: err } );
+      } else {
+        res.json( tweet );
+      }
+    } ) );
+
+  } else {
+    res.status( 400 ).json( { err: 'Bad Request: User must be authenticated to process request.' } );
+  }
+
+}
+
+function apiTweetRemove( req, res ) {
+
+  // Ensure user
+  if ( req.user ) {
+
+    // Ensure some properties
+    req.params[ 'user._id' ] = req.user._id;
+
+    // Add tweet
+    Tweet.remove( req.params, Utils.safeFn( function ( err, tweet ) {
       if ( err ) {
         res.json( { err: err } );
       } else {
