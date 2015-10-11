@@ -181,10 +181,13 @@ function add( data, done ) {
     };
 
     // Ensure valid user
-    User.get( { _id: insertData.user._id }, function ( err ) {
+    User.get( { _id: insertData.user._id }, function ( err, user ) {
       if ( err ) {
         done( err, null );
       } else {
+
+        insertData.user.name = user.name;
+        insertData.user.username = user.username;
 
         // Insert into database
         db[ 'tweets' ].insert( insertData, function ( err, tweet ) {
