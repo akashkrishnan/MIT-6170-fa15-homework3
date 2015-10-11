@@ -39,8 +39,6 @@ var Fritter = function () {
             }
           } );
         }
-      } else {
-        done( new Error( 'Invalid argument text.' ) );
       }
     },
 
@@ -58,8 +56,6 @@ var Fritter = function () {
             alert( 'Unable to remove tweet. Invalid server response.' );
           }
         } );
-      } else {
-        done( new Error( 'Invalid argument _id.' ) );
       }
     }
 

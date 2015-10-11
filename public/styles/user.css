@@ -1,0 +1,8 @@
+[user-profile] {
+  width: 600px;
+  margin-bottom: 10px;
+}
+
+[user-profile] [name] {
+  margin: 16px;
+}

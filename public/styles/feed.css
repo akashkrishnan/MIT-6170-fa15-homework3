@@ -30,5 +30,6 @@
 }
 
 [feed] [tweet] [text] {
+  white-space: pre;
   word-wrap: break-word;
 }

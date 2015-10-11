@@ -12,6 +12,7 @@ module.exports = function ( app, sockets ) {
   app.get( '/config.json', config );
   app.get( '/register', register );
   app.get( '/logout', logout );
+  app.get( '/:username', userProfile );
   app.post( '/api/login', apiLogin );
   app.post( '/api/register', apiRegister );
   app.post( '/api/logout', apiLogout );
@@ -94,6 +95,42 @@ function logout( req, res ) {
   } else {
     res.redirect( '/' );
   }
+
+}
+
+function userProfile( req, res, next ) {
+
+  // NOTE: This is visible to the public.
+
+  // Ensure valid username
+  User.get( { username: req.params.username }, Utils.safeFn( function ( err, user ) {
+    if ( err ) {
+      next();
+    } else {
+
+      // Get tweets
+      Tweet.list(
+        {
+          'user._id': user._id,
+          limit: 20
+        },
+        Utils.safeFn( function ( err, tweets ) {
+          if ( err ) {
+            res.json( { err: err } );
+          } else {
+            res.render( 'user', {
+              web: Config.web,
+              user: req.user,
+              name: user.name,
+              username: user.username,
+              tweets: tweets
+            } );
+          }
+        } )
+      );
+
+    }
+  } ) );
 
 }
 

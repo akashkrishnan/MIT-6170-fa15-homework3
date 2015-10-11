@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title><%= web.name %></title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" type="text/css" href="/styles/global.css">
+    <link rel="stylesheet" type="text/css" href="/styles/layout.css">
+    <link rel="stylesheet" type="text/css" href="/styles/shadow.css">
+    <link rel="stylesheet" type="text/css" href="/styles/feed.css">
+    <link rel="stylesheet" type="text/css" href="/styles/user.css">
+  </head>
+
+  <body fullbleed fit>
+
+    <div masthead shadow elevation="1">
+      <div name><strong><%= web.name %></strong></div>
+    </div>
+
+    <div content>
+      <div layout-horizontal layout-center-justified>
+        <div layout-vertical>
+
+          <div user-profile layout-vertical shadow elevation="1">
+            <div name>
+              <strong><%= name %></strong> <a href="/<%= username %>">@<%= username %></a></span>
+            </div>
+          </div>
+
+          <div feed shadow elevation="1">
+
+            <% tweets.forEach( function( tweet ) { %>
+
+            <div id="<%= tweet._id %>" tweet layout-vertical>
+
+              <div header layout-horizontal>
+                <span author-name><strong><%= tweet.user.name %></strong></span>
+                <a author-handle href="/<%= tweet.user.username %>">@<%= tweet.user.username %></a>
+                <span time><%= tweet.timestamps.created %></span>
+                <span flex></span>
+              </div>
+
+              <div text><%= tweet.text %></div>
+
+            </div>
+
+            <% } ); %>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script>
+
+      (function () {
+
+        // ...
+
+      })();
+
+    </script>
+
+  </body>
+
+</html>
