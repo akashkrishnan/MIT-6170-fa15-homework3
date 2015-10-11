@@ -37,6 +37,7 @@ var AutoresizeTextarea = function ( textarea ) {
 
   that.clear = function () {
     textarea.value = '';
+    asyncResize();
   };
 
   textarea.addEventListener( 'change', resize, false );

@@ -28,15 +28,31 @@
 
           <div feed shadow elevation="1">
 
+            <div id="asdf" tweet layout-vertical>
+
+              <div header layout-horizontal>
+                <span author-name><strong>Akash Krishnan</strong></span>
+                <a author-handle href="/akashkrishnan">@akashkrishnan</a>
+                <span time>now</span>
+                <span flex></span>
+                <span remove-tweet>X</span>
+              </div>
+
+              <div text>This is some simple sample signature content.</div>
+
+            </div>
+
             <div tweet layout-vertical>
 
               <div header layout-horizontal>
-                <span author-name>Akash Krishnan</span>
+                <span author-name><strong>Akash Krishnan</strong></span>
                 <a author-handle href="/akashkrishnan">@akashkrishnan</a>
                 <span time>now</span>
               </div>
 
-              <div text>This is some simple sample signature content.</div>
+              <div text>#Daredevil star @jonnybernthal dishes on his version of The Punisher at #NYCC:
+                        http://ow.ly/Tg2n0
+              </div>
 
             </div>
 
@@ -68,9 +84,50 @@
           } );
         } );
 
+        document.querySelector( '[feed]' ).addEventListener( 'click', function ( e ) {
+          if ( e.target.hasAttribute( 'remove-tweet' ) ) {
+            e.preventDefault();
+            fritter.tweet.remove(
+              {
+                _id: e.target.parentElement.parentElement.id
+              },
+              function ( err, tweet ) {
+                if ( err ) {
+                  console.error( err );
+                  alert( err );
+                } else {
+                  removeTweet( tweet );
+                }
+              }
+            );
+          }
+        } );
+
         var addTweet = function ( tweet ) {
-          console.log( tweet );
+
+          var html = '';
+
+          html += '<div id="' + tweet._id + '" tweet layout-vertical>';
+          html += '<div header layout-horizontal>';
+          html += '<span author-name><strong>' + tweet.user.name + '</strong></span>';
+          html += '<a author-handle href="/' + tweet.user.username + '">@' + tweet.user.username + '</a>';
+          html += '<span time>' + tweet.timestamps.create + '</span>';
+          html += '<span flex></span>';
+          html += '<span remove-tweet>X</span>';
+          html += '</div>';
+          html += '<div text>' + tweet.text + '</div>';
+          html += '</div>';
+
+          document.querySelector( '[feed]' ).insertAdjacentHTML( 'afterbegin', html );
+
         };
+
+        var removeTweet = function ( tweet ) {
+          var e = document.getElementById( tweet._id );
+          if ( e ) {
+            e.parentElement.removeChild( e );
+          }
+        }
 
       })();
 
