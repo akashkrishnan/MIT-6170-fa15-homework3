@@ -14,26 +14,43 @@ input:-webkit-autofill {
 }
 
 div[masthead] {
-  line-height: 46px;
+  position: relative;
+  height: 46px;
   color: #FFFFFF;
   background-color: #4285F4;
 }
 
 [masthead] [name] {
-  padding-left: 16px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   font-size: 24px;
 }
 
-[masthead] [home] {
-  line-height: 30px;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-left: 10px;
+[masthead] [tab] {
+  position: relative;
+  height: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
   z-index: 10;
-  border-radius: 3px;
   cursor: pointer;
-  background-color: white;
-  color: black;
+  color: white;
+  text-decoration: none !important;
+}
+
+[masthead] [tab] [underline] {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+[masthead] [tab]:hover [underline],
+[masthead] [tab][active] [underline] {
+  background-color: rgb(114, 192, 44);
 }
 
 [masthead] #search {
@@ -41,23 +58,10 @@ div[masthead] {
   width: 250px;
   padding-left: 10px;
   padding-right: 10px;
-  margin-right: 10px;
   z-index: 10;
   border-radius: 20px;
   border: none;
   outline: none;
-}
-
-[masthead] [logout] {
-  line-height: 30px;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-right: 10px;
-  z-index: 10;
-  border-radius: 3px;
-  cursor: pointer;
-  background-color: white;
-  color: black;
 }
 
 [content] {
