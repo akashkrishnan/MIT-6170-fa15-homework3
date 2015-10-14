@@ -5,8 +5,9 @@ var Utils = require( '../models/utils.js' );
 var Session = require( '../models/session.js' );
 var User = require( '../models/user.js' );
 var Tweet = require( '../models/tweet.js' );
+var Follower = require( '../models/follower.js' );
 
-module.exports = function ( app, sockets ) {
+module.exports = function ( app ) {
 
   app.get( '/', index );
   app.get( '/config.json', config );
@@ -20,10 +21,9 @@ module.exports = function ( app, sockets ) {
   app.post( '/api/logout', apiLogout );
   app.post( '/api/tweet', apiTweetAdd );
   app.delete( '/api/tweet/:_id', apiTweetRemove );
-
-  //require( './public.js' )( app, sockets );
-  //require( './guest.js' )( app, sockets );
-  //require( './user.js' )( app, sockets );
+  app.post( '/api/tweet/:_id/retweet', apiTweetRetweet );
+  app.post( '/api/user/:followee/follow', apiUserFollow );
+  app.post( '/api/user/:followee/unfollow', apiUserUnfollow );
 
   app.get( '*', otherwise );
 
@@ -178,13 +178,29 @@ function userProfile( req, res, next ) {
           if ( err ) {
             res.json( { err: err } );
           } else {
-            res.render( 'user', {
-              web: Config.web,
-              user: req.user,
-              name: user.name,
-              username: user.username,
-              tweets: tweets
-            } );
+
+            if ( req.user ) {
+
+              // Get following state
+              Follower.get( { follower: req.user._id, followee: user._id }, function ( err, follower ) {
+                res.render( 'user', {
+                  web: Config.web,
+                  self: req.user,
+                  user: user,
+                  following: !!follower,
+                  tweets: tweets
+                } );
+              } );
+
+            } else {
+              res.render( 'user', {
+                web: Config.web,
+                self: req.user,
+                user: user,
+                tweets: tweets
+              } );
+            }
+
           }
         } )
       );
@@ -306,6 +322,68 @@ function apiTweetRemove( req, res ) {
         res.json( { err: err } );
       } else {
         res.json( tweet );
+      }
+    } ) );
+
+  } else {
+    res.status( 400 ).json( { err: 'Bad Request: User must be authenticated to process request.' } );
+  }
+
+}
+
+function apiTweetRetweet( req, res ) {
+
+  // Ensure user
+  if ( req.user ) {
+
+    // Ensure some properties
+    req.params[ 'user._id' ] = req.user._id;
+
+    res.json( { err: 'Not implemented.' } );
+
+  } else {
+    res.status( 400 ).json( { err: 'Bad Request: User must be authenticated to process request.' } );
+  }
+
+}
+
+function apiUserFollow( req, res ) {
+
+  // Ensure user
+  if ( req.user ) {
+
+    // Ensure some properties
+    req.params[ 'follower' ] = req.user._id;
+
+    // Add tweet
+    Follower.add( req.params, Utils.safeFn( function ( err, follower ) {
+      if ( err ) {
+        res.json( { err: err } );
+      } else {
+        res.json( follower );
+      }
+    } ) );
+
+  } else {
+    res.status( 400 ).json( { err: 'Bad Request: User must be authenticated to process request.' } );
+  }
+
+}
+
+function apiUserUnfollow( req, res ) {
+
+  // Ensure user
+  if ( req.user ) {
+
+    // Ensure some properties
+    req.params[ 'follower' ] = req.user._id;
+
+    // Add tweet
+    Follower.remove( req.params, Utils.safeFn( function ( err, follower ) {
+      if ( err ) {
+        res.json( { err: err } );
+      } else {
+        res.json( follower );
       }
     } ) );
 

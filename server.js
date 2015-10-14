@@ -25,7 +25,6 @@ d.run( function () {
   // Structure the HTTP & WS servers
   var app = express();
   var server = require( 'http' ).createServer( app );
-  var io = require( 'socket.io' )( server );
 
   // Configure Express
   app.engine( '.ejs', require( 'ejs' ).renderFile );
@@ -41,8 +40,7 @@ d.run( function () {
   console.log( 'READY: Express' );
 
   // Set up handlers
-  require( './routes' )( app, io.sockets );
-  //io.sockets.on( 'connection', require( './sockets' )( io.sockets ) );
+  require( './routes' )( app );
 
   console.log( 'READY: Request Handlers' );
 

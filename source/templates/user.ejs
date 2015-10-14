@@ -49,7 +49,7 @@
       <div layout-horizontal layout-center-justified>
         <div layout-vertical>
 
-          <% if ( username === user.username ) { %>
+          <% if ( user._id === self._id ) { %>
 
           <div compose-tweet layout-vertical shadow elevation="1">
             <textarea tweet-input rows="1" placeholder="What's happening?"></textarea>
@@ -57,16 +57,25 @@
 
           <% } else { %>
 
-          <div user-profile layout-vertical shadow elevation="1">
+          <div id="<%= user._id %>" user-profile layout-vertical shadow elevation="1">
 
             <div header layout-horizontal layout-center>
+
               <div title>Profile</div>
               <div flex></div>
+
+              <% if ( self && !following ) { %>
               <div button follow><span>Follow</span></div>
+              <% } %>
+
+              <% if ( self && following ) { %>
+              <div button follow active><span>Following</span></div>
+              <% } %>
+
             </div>
 
             <div name>
-              <strong><%= name %></strong> <a href="/<%= username %>">@<%= username %></a>
+              <strong><%= user.name %></strong> <a href="/<%= user.username %>">@<%= user.username %></a>
             </div>
 
           </div>
@@ -90,7 +99,7 @@
                 <span time><%= tweet.timestamps.created %></span>
                 <span flex></span>
 
-                <% if ( tweet.user.username === user.username ) { %>
+                <% if ( tweet.user.username === self.username ) { %>
                 <span remove-tweet>X</span>
                 <% } %>
 
@@ -112,6 +121,7 @@
     <script src="./autoresize-textarea.js"></script>
     <script src="./controllers/scaffoldController.js"></script>
     <script src="./controllers/tweetController.js"></script>
+    <script src="./controllers/profileController.js"></script>
 
   </body>
 

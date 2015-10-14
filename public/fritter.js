@@ -57,11 +57,67 @@ var Fritter = function () {
           }
         } );
       }
+    },
+
+    retweet: function ( data, done ) {
+      if ( data && data[ 'tweet._id' ] ) {
+        ajax( 'POST', '/api/tweet/' + data[ 'tweet._id' ] + '/retweet', data, function ( data ) {
+          if ( data ) {
+            if ( data.err ) {
+              done( data.err, null );
+            } else {
+              done( null, data );
+            }
+          } else {
+            console.error( 'Unable to retweet tweet. Invalid server response.' );
+            alert( 'Unable to retweet tweet. Invalid server response.' );
+          }
+        } );
+      }
+    }
+
+  };
+
+  that.user = {
+
+    follow: function ( data, done ) {
+      if ( data && data.followee ) {
+        ajax( 'POST', '/api/user/' + data.followee + '/follow', data, function ( data ) {
+          if ( data ) {
+            if ( data.err ) {
+              done( data.err, null );
+            } else {
+              done( null, data );
+            }
+          } else {
+            console.error( 'Unable to follow user. Invalid server response.' );
+            alert( 'Unable to follow user. Invalid server response.' );
+          }
+        } );
+      }
+    },
+
+    unfollow: function ( data, done ) {
+      if ( data && data.followee ) {
+        ajax( 'POST', '/api/user/' + data.followee + '/unfollow', data, function ( data ) {
+          if ( data ) {
+            if ( data.err ) {
+              done( data.err, null );
+            } else {
+              done( null, data );
+            }
+          } else {
+            console.error( 'Unable to unfollow user. Invalid server response.' );
+            alert( 'Unable to unfollow user. Invalid server response.' );
+          }
+        } );
+      }
     }
 
   };
 
   Object.freeze( that.tweet );
+  Object.freeze( that.user );
   Object.freeze( that );
 
   return that;

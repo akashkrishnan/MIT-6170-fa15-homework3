@@ -8,7 +8,8 @@
     "install": "npm run bower update --save && npm run bower install --save && npm install -g supervisor,mocha",
     "test": "mocha",
     "init": "node init.js",
-    "start": "supervisor -e js,json -i public,source -q server.js"
+    "start": "supervisor -e js,json -i public,source -q server.js",
+    "start-background": "(npm start 1> out 2> err &)"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,6 @@
     "ejs": "^2.3.4",
     "escape-html": "^1.0.3",
     "express": "^4.13.3",
-    "mongojs": "^1.3.0",
-    "socket.io": "^1.3.7"
+    "mongojs": "^1.3.0"
   }
 }

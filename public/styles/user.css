@@ -26,7 +26,7 @@
 }
 
 [user-profile] > [header] > [button][follow]:hover,
-[user-profile] > [header] > [button][following] {
+[user-profile] > [header] > [button][follow][active] {
   background-color: rgb(211, 72, 54);
 }
 
