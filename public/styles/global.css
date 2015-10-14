@@ -34,7 +34,6 @@ div[masthead] {
   height: 100%;
   padding-left: 16px;
   padding-right: 16px;
-  z-index: 10;
   cursor: pointer;
   color: white;
   text-decoration: none !important;
@@ -48,7 +47,10 @@ div[masthead] {
   height: 4px;
 }
 
-[masthead] [tab]:hover [underline],
+[masthead] [tab]:hover {
+  background-color: rgb(114, 192, 44);
+}
+
 [masthead] [tab][active] [underline] {
   background-color: rgb(114, 192, 44);
 }
@@ -56,12 +58,32 @@ div[masthead] {
 [masthead] #search {
   height: 30px;
   width: 250px;
-  padding-left: 10px;
-  padding-right: 10px;
-  z-index: 10;
-  border-radius: 20px;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-radius: 3px;
+  margin-left: 8px;
+  margin-right: 8px;
   border: none;
   outline: none;
+  z-index: 10;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.14902);
+}
+
+[masthead] #search::-webkit-input-placeholder {
+  color: white;
+}
+
+[masthead] #search:-moz-placeholder {
+  color: white;
+}
+
+[masthead] #search::-moz-placeholder {
+  color: white;
+}
+
+[masthead] #search:-ms-input-placeholder {
+  color: white;
 }
 
 [content] {

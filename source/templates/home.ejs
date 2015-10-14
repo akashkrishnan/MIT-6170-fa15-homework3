@@ -59,11 +59,16 @@
             <div id="<%= tweet._id %>" tweet layout-vertical>
 
               <div header layout-horizontal>
+
                 <span author-name><strong><%= tweet.user.name %></strong></span>
                 <a author-handle href="/<%= tweet.user.username %>">@<%= tweet.user.username %></a>
                 <span time><%= tweet.timestamps.created %></span>
                 <span flex></span>
+
+                <% if ( tweet.user.username === user.username ) { %>
                 <span remove-tweet>X</span>
+                <% } %>
+
               </div>
 
               <div text><%= tweet.text %></div>

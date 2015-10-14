@@ -78,7 +78,7 @@
                 <span time><%= tweet.timestamps.created %></span>
                 <span flex></span>
 
-                <% if ( username === user.username ) { %>
+                <% if ( tweet.user.username === user.username ) { %>
                 <span remove-tweet>X</span>
                 <% } %>
 
