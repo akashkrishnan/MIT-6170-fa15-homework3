@@ -36,7 +36,9 @@ div[masthead] {
   padding-right: 16px;
   cursor: pointer;
   color: white;
+  font-size: 16px;
   text-decoration: none !important;
+  text-transform: uppercase;
 }
 
 [masthead] [tab] [underline] {

@@ -3,6 +3,18 @@
   margin-bottom: 10px;
 }
 
+[user-profile] > [header] {
+  height: 40px;
+  padding-left: 16px;
+  padding-right: 16px;
+  color: #FFFFFF;
+  background-color: #4285F4;
+  font-size: 18px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-transform: uppercase;
+}
+
 [user-profile] [name] {
   margin: 16px;
 }

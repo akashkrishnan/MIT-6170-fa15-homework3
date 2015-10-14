@@ -6,15 +6,19 @@ var User = require( './user.js' );
 var Mention = require( './mention.js' );
 var Hashtag = require( './hashtag.js' );
 var mongojs = require( 'mongojs' );
+var ObjectId = mongojs.ObjectId;
 var htmlEscape = require( 'escape-html' );
 
 var db = mongojs( Config.services.db.mongodb.uri, [ 'tweets' ] );
+
+db[ 'tweets' ].createIndex( { 'user._id': 1, 'timestamps.created': 1 }, {} );
 
 module.exports = {
 
   //---------------EXTERNAL---------------//
 
   list: list,
+  listMentions: listMentions,
   get: get,
   add: add,
   remove: remove
@@ -82,6 +86,102 @@ function list( data, done ) {
               done( null, tweets, count );
             }
           } );
+      }
+    } );
+
+  } catch ( err ) {
+    done( err, null, null );
+  }
+}
+
+/**
+ * @callback listMentionsCallback
+ * @param {Error} err - Error object
+ * @param {Array.<object>} tweets - list of mentioned Tweet objects
+ * @param {number} count - total number of elements that match query before offset and limit
+ */
+
+/**
+ * Gets a list of mentioned Tweet objects.
+ *
+ * @param {object} data
+ * @param {string} [data.user._id] - User._id
+ * @param {object} [data.projection] -
+ * @param {boolean} [data.projection.timestamps] -
+ * @param {object} [data.sort] -
+ * @param {number} [data.timestamps.created] -
+ * @param {number} [data.offset=0] -
+ * @param {number} [data.limit=0] -
+ * @param {listMentionsCallback} done - callback
+ */
+function listMentions( data, done ) {
+  try {
+
+    var userCriteria = Utils.validateObject( data, {
+      'user._id': { type: 'string', required: true }
+    } );
+
+    var projection = Utils.validateObject( data, {
+      projection: {
+        type: {
+          timestamps: { type: 'boolean' }
+        },
+        filter: 'projection',
+        default: {} // TODO: DEFAULT TO MINIMAL PROJECTION
+      }
+    } ).projection;
+
+    var sort = Utils.validateObject( data, {
+      sort: {
+        type: {
+          'timestamps.created': { type: 'number' }
+        },
+        default: { 'timestamps.created': -1 }
+      }
+    } ).sort;
+
+    // Ensure valid user
+    User.get( { _id: userCriteria[ 'user._id' ] }, function ( err, user ) {
+      if ( err ) {
+        done( err, null, null );
+      } else {
+
+        Mention.list(
+          {
+            mention: '@' + user.username,
+            projection: {
+              timestamps: false
+            },
+            sort: sort,
+            offset: data.offset,
+            limit: data.limit
+          },
+          function ( err, mentions, count ) {
+            if ( err ) {
+              done( err, null, null );
+            } else {
+
+              // Retrieve list of Tweet._id
+              var ids = mentions.map( function ( mention ) {
+                return ObjectId( mention.tweet._id );
+              } );
+
+              var criteria = { _id: { $in: ids } };
+
+              db[ 'tweets' ]
+                .find( criteria, projection )
+                .sort( sort, function ( err, tweets ) {
+                  if ( err ) {
+                    done( err, null, null );
+                  } else {
+                    done( null, tweets, count );
+                  }
+                } );
+
+            }
+          }
+        );
+
       }
     } );
 
@@ -186,7 +286,7 @@ function add( data, done ) {
     // Ensure valid user
     User.get( { _id: insertData.user._id }, function ( err, user ) {
       if ( err ) {
-        done( err, null );
+        done( err, null, null, null );
       } else {
 
         insertData.user.name = user.name;
@@ -195,14 +295,15 @@ function add( data, done ) {
         // Insert into database
         db[ 'tweets' ].insert( insertData, function ( err, tweet ) {
           if ( err ) {
-            done( err )
+            done( err, null, null, null )
           } else {
 
             // Add mentions
             Mention.addAll(
               {
                 'tweet._id': tweet._id.toString(),
-                mentions: mentions
+                mentions: mentions,
+                'timestamps.created': insertData.timestamps.created
               },
               Utils.safeFn( function () {
 
@@ -212,7 +313,8 @@ function add( data, done ) {
                 Hashtag.addAll(
                   {
                     'tweet._id': tweet._id.toString(),
-                    hashtags: hashtags
+                    hashtags: hashtags,
+                    'timestamps.created': insertData.timestamps.created
                   },
                   Utils.safeFn( function () {
 

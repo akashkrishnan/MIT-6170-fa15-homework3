@@ -21,7 +21,7 @@ function unique( list ) {
   var unique = [];
 
   list.forEach( function ( v ) {
-    if ( unique.indexOf( v ) === 0 ) {
+    if ( unique.indexOf( v ) === -1 ) {
       unique.push( v );
     }
   } );

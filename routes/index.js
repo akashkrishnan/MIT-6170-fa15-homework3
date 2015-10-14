@@ -105,7 +105,7 @@ function mentions( req, res, next ) {
   if ( req.user ) {
 
     // Get tweets
-    Tweet.list(
+    Tweet.listMentions(
       {
         'user._id': req.user._id,
         limit: 20

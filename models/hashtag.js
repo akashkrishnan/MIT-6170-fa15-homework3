@@ -6,6 +6,8 @@ var mongojs = require( 'mongojs' );
 
 var db = mongojs( Config.services.db.mongodb.uri, [ 'hashtags' ] );
 
+db[ 'hashtags' ].createIndex( { hashtag: 1, 'timestamps.created': 1 }, {} );
+
 module.exports = {
 
   //---------------EXTERNAL---------------//
@@ -24,7 +26,7 @@ module.exports = {
 /**
  * @callback listCallback
  * @param {Error} err - Error object
- * @param {Array.<object>} hashtags - list of hashtags
+ * @param {Array.<ObjectId>} hashtags - list of hashtags
  * @param {number} count -
  */
 
@@ -32,15 +34,61 @@ module.exports = {
  * Gets a list of hashtags.
  *
  * @param {object} data -
+ * @param {string} data.hashtag - hashtag with #
+ * @param {object} [data.projection] -
+ * @param {boolean} [data.projection.timestamps] -
+ * @param {object} [data.sort] -
+ * @param {number} [data.timestamps.created] -
+ * @param {number} [data.offset=0] -
+ * @param {number} [data.limit=0] -
  * @param {listCallback} done - callback
  */
 function list( data, done ) {
   try {
 
-    done( 'Not Implemented.' );
+    var criteria = Utils.validateObject( data, {
+      hashtag: { type: 'string', required: true }
+    } );
+
+    var projection = Utils.validateObject( data, {
+      projection: {
+        type: {
+          timestamps: { type: 'boolean' }
+        },
+        filter: 'projection',
+        default: {} // TODO: DEFAULT TO MINIMAL PROJECTION
+      }
+    } ).projection;
+
+    var sort = Utils.validateObject( data, {
+      sort: {
+        type: {
+          'timestamps.created': { type: 'number' }
+        },
+        default: { 'timestamps.created': -1 }
+      }
+    } ).sort;
+
+    db[ 'hashtags' ].count( criteria, function ( err, count ) {
+      if ( err ) {
+        done( err, null, null );
+      } else {
+        db[ 'hashtags' ]
+          .find( criteria, projection )
+          .sort( sort )
+          .skip( data.offset || 0 ) // TODO: IMPROVE PERFORMANCE
+          .limit( data.limit || 0, function ( err, hashtags ) {
+            if ( err ) {
+              done( err, null, null );
+            } else {
+              done( null, hashtags, count );
+            }
+          } );
+      }
+    } );
 
   } catch ( err ) {
-    done( err );
+    done( err, null, null );
   }
 }
 
@@ -54,7 +102,7 @@ function list( data, done ) {
  *
  * @param {object} data -
  * @param {string} data.tweet._id - Tweet._id
- * @param {Array.<string>} data.hashtags - list of mentioned hashtags
+ * @param {Array.<string>} data.hashtags - list of mentioned hashtags with #
  * @param {addAllCallback} done - callback
  */
 function addAll( data, done ) {
@@ -62,7 +110,8 @@ function addAll( data, done ) {
 
     var criteria = Utils.validateObject( data, {
       'tweet._id': { type: 'string', required: true },
-      hashtags: { required: true }
+      hashtags: { required: true },
+      'timestamps.created': { required: true }
     } );
 
     if ( criteria.hashtags instanceof Array ) {
@@ -76,7 +125,8 @@ function addAll( data, done ) {
         criteria.hashtags.forEach( function ( hashtag ) {
           bulk.insert( {
             tweet: { _id: criteria[ 'tweet._id' ] },
-            hashtag: hashtag
+            hashtag: hashtag,
+            timestamps: { created: criteria[ 'timestamps.created' ] }
           } );
         } );
 

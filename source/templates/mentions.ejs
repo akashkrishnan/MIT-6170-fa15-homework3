@@ -50,6 +50,10 @@
 
           <div feed shadow elevation="1">
 
+            <div header layout-horizontal layout-center>
+              <div>Tweets</div>
+            </div>
+
             <% tweets.forEach( function( tweet ) { %>
 
             <div id="<%= tweet._id %>" tweet layout-vertical>
@@ -79,7 +83,10 @@
       </div>
     </div>
 
+    <script src="./fritter.js"></script>
+    <script src="./autoresize-textarea.js"></script>
     <script src="./controllers/scaffoldController.js"></script>
+    <script src="./controllers/tweetController.js"></script>
 
   </body>
 

@@ -58,14 +58,24 @@
           <% } else { %>
 
           <div user-profile layout-vertical shadow elevation="1">
+
+            <div header layout-horizontal layout-center>
+              <div>Profile</div>
+            </div>
+
             <div name>
               <strong><%= name %></strong> <a href="/<%= username %>">@<%= username %></a>
             </div>
+
           </div>
 
           <% } %>
 
           <div feed shadow elevation="1">
+
+            <div header layout-horizontal layout-center>
+              <div>Tweets</div>
+            </div>
 
             <% tweets.forEach( function( tweet ) { %>
 

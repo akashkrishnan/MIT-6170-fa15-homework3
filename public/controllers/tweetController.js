@@ -2,37 +2,46 @@
 
   var fritter = Fritter();
 
-  var textarea = AutoresizeTextarea( document.querySelector( 'textarea[tweet-input]' ) );
-  textarea.addSubmitListener( function ( text ) {
-    fritter.tweet.add( { text: text }, function ( err, tweet ) {
-      if ( err ) {
-        console.error( err );
-        alert( err );
-      } else {
-        textarea.clear();
-        addTweet( tweet );
+  var textarea = document.querySelector( 'textarea[tweet-input]' );
+  if ( textarea ) {
+
+    var tweeter = AutoresizeTextarea( textarea );
+
+    tweeter.addSubmitListener( function ( text ) {
+      fritter.tweet.add( { text: text }, function ( err, tweet ) {
+        if ( err ) {
+          console.error( err );
+          alert( err );
+        } else {
+          tweeter.clear();
+          addTweet( tweet );
+        }
+      } );
+    } );
+
+  }
+
+  var feed = document.querySelector( '[feed]' );
+  if ( feed ) {
+    feed.addEventListener( 'click', function ( e ) {
+      if ( e.target.hasAttribute( 'remove-tweet' ) ) {
+        e.preventDefault();
+        fritter.tweet.remove(
+          {
+            _id: e.target.parentElement.parentElement.id
+          },
+          function ( err, tweet ) {
+            if ( err ) {
+              console.error( err );
+              alert( err );
+            } else {
+              removeTweet( tweet );
+            }
+          }
+        );
       }
     } );
-  } );
-
-  document.querySelector( '[feed]' ).addEventListener( 'click', function ( e ) {
-    if ( e.target.hasAttribute( 'remove-tweet' ) ) {
-      e.preventDefault();
-      fritter.tweet.remove(
-        {
-          _id: e.target.parentElement.parentElement.id
-        },
-        function ( err, tweet ) {
-          if ( err ) {
-            console.error( err );
-            alert( err );
-          } else {
-            removeTweet( tweet );
-          }
-        }
-      );
-    }
-  } );
+  }
 
   var addTweet = function ( tweet ) {
 
@@ -49,7 +58,10 @@
     html += '<div text>' + tweet.text + '</div>';
     html += '</div>';
 
-    document.querySelector( '[feed]' ).insertAdjacentHTML( 'afterbegin', html );
+    var feed = document.querySelector( '[feed]' );
+    if ( feed ) {
+      feed.insertAdjacentHTML( 'afterbegin', html );
+    }
 
   };
 
