@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title><%= web.name %> / Mentions</title>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" type="text/css" href="/styles/global.css">
+    <link rel="stylesheet" type="text/css" href="/styles/layout.css">
+    <link rel="stylesheet" type="text/css" href="/styles/shadow.css">
+    <link rel="stylesheet" type="text/css" href="/styles/feed.css">
+    <link rel="stylesheet" type="text/css" href="/styles/user.css">
+  </head>
+
+  <body fullbleed fit>
+
+    <div masthead layout-horizontal layout-center shadow elevation="1">
+
+      <div name layout-horizontal layout-center layout-center-justified><strong><%= web.name %></strong></div>
+
+      <a href="/" tab layout-horizontal layout-center>
+        <div>Home</div>
+        <div underline></div>
+      </a>
+
+      <a href="/mentions" tab layout-horizontal layout-center active>
+        <div>Mentions</div>
+        <div underline></div>
+      </a>
+
+      <a href="/followers" tab layout-horizontal layout-center>
+        <div>Followers</div>
+        <div underline></div>
+      </a>
+
+      <div flex></div>
+
+      <input id="search" placeholder="Enter username to view profile..."/>
+
+      <a href="/logout" tab layout-horizontal layout-center>
+        <div>Logout</div>
+        <div underline></div>
+      </a>
+
+    </div>
+
+    <div content>
+      <div layout-horizontal layout-center-justified>
+        <div layout-vertical>
+
+          <div feed shadow elevation="1">
+
+            <% tweets.forEach( function( tweet ) { %>
+
+            <div id="<%= tweet._id %>" tweet layout-vertical>
+
+              <div header layout-horizontal>
+
+                <span author-name><strong><%= tweet.user.name %></strong></span>
+                <a author-handle href="/<%= tweet.user.username %>">@<%= tweet.user.username %></a>
+                <span time><%= tweet.timestamps.created %></span>
+                <span flex></span>
+
+                <% if ( tweet.user.username === user.username ) { %>
+                <span remove-tweet>X</span>
+                <% } %>
+
+              </div>
+
+              <div text><%= tweet.text %></div>
+
+            </div>
+
+            <% } ); %>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="./controllers/scaffoldController.js"></script>
+
+  </body>
+
+</html>

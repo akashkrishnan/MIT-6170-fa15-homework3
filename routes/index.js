@@ -12,6 +12,8 @@ module.exports = function ( app, sockets ) {
   app.get( '/config.json', config );
   app.get( '/register', register );
   app.get( '/logout', logout );
+  app.get( '/mentions', mentions );
+  app.get( '/followers', followers );
   app.get( '/:username', userProfile );
   app.post( '/api/login', apiLogin );
   app.post( '/api/register', apiRegister );
@@ -94,6 +96,64 @@ function logout( req, res ) {
 
   } else {
     res.redirect( '/' );
+  }
+
+}
+
+function mentions( req, res, next ) {
+
+  if ( req.user ) {
+
+    // Get tweets
+    Tweet.list(
+      {
+        'user._id': req.user._id,
+        limit: 20
+      },
+      Utils.safeFn( function ( err, tweets ) {
+        if ( err ) {
+          res.json( { err: err } );
+        } else {
+          res.render( 'mentions', {
+            web: Config.web,
+            user: req.user,
+            tweets: tweets
+          } );
+        }
+      } )
+    );
+
+  } else {
+    next();
+  }
+
+}
+
+function followers( req, res, next ) {
+
+  if ( req.user ) {
+
+    // Get tweets
+    Tweet.list(
+      {
+        'user._id': req.user._id,
+        limit: 20
+      },
+      Utils.safeFn( function ( err, tweets ) {
+        if ( err ) {
+          res.json( { err: err } );
+        } else {
+          res.render( 'followers', {
+            web: Config.web,
+            user: req.user,
+            tweets: tweets
+          } );
+        }
+      } )
+    );
+
+  } else {
+    next();
   }
 
 }
