@@ -142,7 +142,7 @@ function apiLogin( req, res ) {
     // Check if user exists with username and password
     User.get( req.body, Utils.safeFn( function ( err, user ) {
       if ( err ) {
-        res.json( { err: err } );
+        res.json( { err: 'Invalid Credentials' } );
       } else {
 
         // Add new session that persists indefinitely until logout
@@ -172,14 +172,11 @@ function apiRegister( req, res ) {
   if ( !req.user ) {
 
     // Register user by adding
-    User.add( req.body, Utils.safeFn( function ( err, user ) {
+    User.add( req.body, Utils.safeFn( function ( err ) {
       if ( err ) {
         res.json( { err: err } );
       } else {
-
-        // TODO: we need to sign in the user
         res.json( {} );
-
       }
     } ) );
 
