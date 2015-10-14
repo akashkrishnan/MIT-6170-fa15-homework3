@@ -5,14 +5,29 @@
 
 [user-profile] > [header] {
   height: 40px;
-  padding-left: 16px;
-  padding-right: 16px;
   color: #FFFFFF;
   background-color: #4285F4;
   font-size: 18px;
   white-space: nowrap;
   overflow-x: hidden;
   text-transform: uppercase;
+}
+
+[user-profile] > [header] > [title] {
+  padding-left: 16px;
+}
+
+[user-profile] > [header] > [button] {
+  width: 68px;
+  padding-left: 16px;
+  padding-right: 16px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+[user-profile] > [header] > [button][follow]:hover,
+[user-profile] > [header] > [button][following] {
+  background-color: rgb(211, 72, 54);
 }
 
 [user-profile] [name] {
