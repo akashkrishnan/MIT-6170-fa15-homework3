@@ -4,10 +4,31 @@ var util = require( 'util' );
 var ObjectId = require( 'mongojs' ).ObjectId;
 
 module.exports = {
+  unique: unique,
   noop: noop,
   safeFn: safeFn,
   validateObject: validateObject
 };
+
+/**
+ * Returns a list of unique values that exist in the provided list.
+ *
+ * @param {Array} list - list of values
+ * @returns {Array} - unique list of values
+ */
+function unique( list ) {
+
+  var unique = [];
+
+  list.forEach( function ( v ) {
+    if ( unique.indexOf( v ) === 0 ) {
+      unique.push( v );
+    }
+  } );
+
+  return unique;
+
+}
 
 /**
  * A function that does nothing.

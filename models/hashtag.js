@@ -12,7 +12,12 @@ module.exports = {
 
   list: list,
   addAll: addAll,
-  removeAll: removeAll
+  removeAll: removeAll,
+
+
+  //---------------INTERNAL---------------//
+
+  extract: extract
 
 };
 
@@ -130,4 +135,14 @@ function removeAll( data, done ) {
   } catch ( err ) {
     done( err );
   }
+}
+
+/**
+ * Extracts a list of unique hashtags in the provided message string.
+ *
+ * @param {string} msg - message string to extract hashtags from
+ * @returns {Array.<string>} - list of unique hashtags
+ */
+function extract( msg ) {
+  return Utils.unique( msg.match( /\S*#(?:\[[^\]]+\]|\S+)/gi ) || [] );
 }

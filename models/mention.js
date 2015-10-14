@@ -12,7 +12,12 @@ module.exports = {
 
   list: list,
   addAll: addAll,
-  removeAll: removeAll
+  removeAll: removeAll,
+
+
+  //---------------INTERNAL---------------//
+
+  extract: extract
 
 };
 
@@ -130,4 +135,17 @@ function removeAll( data, done ) {
   } catch ( err ) {
     done( err );
   }
+}
+
+/**
+ * Extracts a list of unique mentions in the provided message string.
+ *
+ * TODO: ENSURE VALID USERNAMES
+ * TODO: RETRIEVE USER ID?
+ *
+ * @param {string} msg - message string to extract mentions from
+ * @returns {Array.<string>} - list of unique mentions
+ */
+function extract( msg ) {
+  return Utils.unique( msg.match( /\B@[a-z0-9_-]+/gi ) || [] );
 }

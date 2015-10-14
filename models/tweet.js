@@ -166,8 +166,8 @@ function add( data, done ) {
       text: { type: 'string', required: true }
     } );
 
-    var mentions = extractMentions( insertData.text );
-    var hashtags = extractHashtags( insertData.text );
+    var mentions = Mention.extract( insertData.text );
+    var hashtags = Hashtag.extract( insertData.text );
 
     var now = new Date();
 
@@ -297,19 +297,4 @@ function remove( data, done ) {
   } catch ( err ) {
     done( err, null );
   }
-}
-
-/**
- * TODO: ENSURE VALID USERNAMES
- * TODO: RETRIEVE USER ID?
- *
- * @param msg
- * @returns {*|Boolean|Array|{index: number, input: string}}
- */
-function extractMentions( msg ) {
-  return msg.match( /\B@[a-z0-9_-]+/gi ) || [];
-}
-
-function extractHashtags( msg ) {
-  return msg.match( /\S*#(?:\[[^\]]+\]|\S+)/gi ) || [];
 }
