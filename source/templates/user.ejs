@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="/styles/shadow.css">
     <link rel="stylesheet" type="text/css" href="/styles/feed.css">
     <link rel="stylesheet" type="text/css" href="/styles/user.css">
+    <link rel="stylesheet" type="text/css" href="/styles/home.css">
   </head>
 
   <body fullbleed fit>
@@ -48,11 +49,21 @@
       <div layout-horizontal layout-center-justified>
         <div layout-vertical>
 
+          <% if ( username === user.username ) { %>
+
+          <div compose-tweet layout-vertical shadow elevation="1">
+            <textarea tweet-input rows="1" placeholder="What's happening?"></textarea>
+          </div>
+
+          <% } else { %>
+
           <div user-profile layout-vertical shadow elevation="1">
             <div name>
-              <strong><%= name %></strong> <a href="/<%= username %>">@<%= username %></a></span>
+              <strong><%= name %></strong> <a href="/<%= username %>">@<%= username %></a>
             </div>
           </div>
+
+          <% } %>
 
           <div feed shadow elevation="1">
 
@@ -61,10 +72,16 @@
             <div id="<%= tweet._id %>" tweet layout-vertical>
 
               <div header layout-horizontal>
+
                 <span author-name><strong><%= tweet.user.name %></strong></span>
                 <a author-handle href="/<%= tweet.user.username %>">@<%= tweet.user.username %></a>
                 <span time><%= tweet.timestamps.created %></span>
                 <span flex></span>
+
+                <% if ( username === user.username ) { %>
+                <span remove-tweet>X</span>
+                <% } %>
+
               </div>
 
               <div text><%= tweet.text %></div>
@@ -79,7 +96,10 @@
       </div>
     </div>
 
+    <script src="./fritter.js"></script>
+    <script src="./autoresize-textarea.js"></script>
     <script src="./controllers/scaffoldController.js"></script>
+    <script src="./controllers/tweetController.js"></script>
 
   </body>
 
