@@ -24,6 +24,7 @@
   var feed = document.querySelector( '[feed]' );
   if ( feed ) {
     feed.addEventListener( 'click', function ( e ) {
+
       if ( e.target.hasAttribute( 'remove-tweet' ) ) {
         e.preventDefault();
         fritter.tweet.remove(
@@ -37,7 +38,21 @@
             }
           }
         );
+      } else if ( e.target.hasAttribute( 'retweet-tweet' ) ) {
+        e.preventDefault();
+        fritter.tweet.retweet(
+          { _id: e.target.parentElement.parentElement.id },
+          function ( err, tweet ) {
+            if ( err ) {
+              console.error( err );
+              alert( err );
+            } else {
+              addTweet( tweet );
+            }
+          }
+        );
       }
+
     } );
   }
 
