@@ -18,7 +18,11 @@ module.exports = function ( name ) {
         // Ensure valid session
         Session.get( { _id: req.apikey }, Utils.safeFn( function ( err, session ) {
           if ( err ) {
+
+            // The session doesn't exist or something went wrong. Either way, tell client to remove cookie
+            res.clearCookie( name );
             next();
+
           } else {
 
             /**

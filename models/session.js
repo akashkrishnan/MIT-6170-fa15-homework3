@@ -40,8 +40,10 @@ function get( data, done ) {
     db[ 'sessions' ].findOne( criteria, function ( err, session ) {
       if ( err ) {
         done( err, null );
-      } else {
+      } else if ( session ) {
         done( null, session );
+      } else {
+        done( new Error( 'Session not found.' ), null );
       }
     } );
 
