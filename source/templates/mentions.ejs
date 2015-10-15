@@ -28,8 +28,8 @@
         <div underline></div>
       </a>
 
-      <a href="/followers" tab layout-horizontal layout-center>
-        <div>Followers</div>
+      <a href="/friends" tab layout-horizontal layout-center>
+        <div>Friends</div>
         <div underline></div>
       </a>
 
@@ -64,7 +64,7 @@
 
                   <span author-name><strong><%= tweet.user.name %></strong></span>
                   <a author-handle href="/<%= tweet.user.username %>">@<%= tweet.user.username %></a>
-                  <span time><%= tweet.timestamps.created %></span>
+                  <span time="<%= tweet.timestamps.created %>"></span>
                   <span flex></span>
 
                   <% if ( tweet.user.username === user.username ) { %>

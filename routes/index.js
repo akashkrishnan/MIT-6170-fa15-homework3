@@ -15,7 +15,7 @@ module.exports = function ( app ) {
   app.get( '/register', register );
   app.get( '/logout', logout );
   app.get( '/mentions', mentions );
-  app.get( '/followers', followers );
+  app.get( '/friends', friends );
   app.get( '/:username', userProfile );
   app.post( '/api/login', apiLogin );
   app.post( '/api/register', apiRegister );
@@ -80,7 +80,7 @@ function register( req, res, next ) {
 
 function logout( req, res ) {
 
-  // Ensure user
+  // This route is restricted to authenticated users
   if ( req.user ) {
 
     // Remove session
@@ -103,10 +103,11 @@ function logout( req, res ) {
 
 function mentions( req, res, next ) {
 
+  // This route is restricted to authenticated users
   if ( req.user ) {
 
     // Get tweets
-    Tweet.listMentions(
+    Tweet.listFromMentions(
       {
         user: req.user._id,
         limit: 20
@@ -130,12 +131,13 @@ function mentions( req, res, next ) {
 
 }
 
-function followers( req, res, next ) {
+function friends( req, res, next ) {
 
+  // This route is restricted to authenticated users
   if ( req.user ) {
 
     // Get tweets
-    Tweet.list(
+    Tweet.listFromFriends(
       {
         user: req.user._id,
         limit: 20
@@ -144,7 +146,7 @@ function followers( req, res, next ) {
         if ( err ) {
           res.json( { err: err } );
         } else {
-          res.render( 'followers', {
+          res.render( 'friends', {
             web: Config.web,
             user: req.user,
             tweets: tweets
@@ -156,7 +158,6 @@ function followers( req, res, next ) {
   } else {
     next();
   }
-
 }
 
 function userProfile( req, res, next ) {

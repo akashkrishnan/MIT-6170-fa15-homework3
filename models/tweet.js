@@ -18,7 +18,8 @@ module.exports = {
   //---------------EXTERNAL---------------//
 
   list: list,
-  listMentions: listMentions,
+  listFromMentions: listFromMentions,
+  listFromFriends: listFromFriends,
   get: get,
   add: add,
   remove: remove
@@ -95,7 +96,7 @@ function list( data, done ) {
 }
 
 /**
- * @callback listMentionsCallback
+ * @callback listFromMentionsCallback
  * @param {Error} err - Error object
  * @param {Array.<object>} tweets - list of mentioned Tweet objects
  * @param {number} count - total number of elements that match query before offset and limit
@@ -112,9 +113,105 @@ function list( data, done ) {
  * @param {number} [data.timestamps.created] -
  * @param {number} [data.offset=0] -
  * @param {number} [data.limit=0] -
- * @param {listMentionsCallback} done - callback
+ * @param {listFromMentionsCallback} done - callback
  */
-function listMentions( data, done ) {
+function listFromMentions( data, done ) {
+  try {
+
+    var userCriteria = Utils.validateObject( data, {
+      user: { type: 'string', required: true }
+    } );
+
+    var projection = Utils.validateObject( data, {
+      projection: {
+        type: {
+          timestamps: { type: 'boolean' }
+        },
+        filter: 'projection',
+        default: {} // TODO: DEFAULT TO MINIMAL PROJECTION
+      }
+    } ).projection;
+
+    var sort = Utils.validateObject( data, {
+      sort: {
+        type: {
+          'timestamps.created': { type: 'number' }
+        },
+        default: { 'timestamps.created': -1 }
+      }
+    } ).sort;
+
+    // Ensure valid user
+    User.get( { _id: userCriteria.user }, function ( err, user ) {
+      if ( err ) {
+        done( err, null, null );
+      } else {
+
+        Mention.list(
+          {
+            mention: user._id,
+            projection: {
+              timestamps: false
+            },
+            sort: sort,
+            offset: data.offset,
+            limit: data.limit
+          },
+          function ( err, mentions, count ) {
+            if ( err ) {
+              done( err, null, null );
+            } else {
+
+              // Retrieve list of Tweet._id
+              var ids = mentions.map( function ( mention ) {
+                return ObjectId( mention.tweet );
+              } );
+
+              var criteria = { _id: { $in: ids } };
+
+              db[ 'tweets' ]
+                .find( criteria, projection )
+                .sort( sort, function ( err, tweets ) {
+                  if ( err ) {
+                    done( err, null, null );
+                  } else {
+                    done( null, tweets, count );
+                  }
+                } );
+
+            }
+          }
+        );
+
+      }
+    } );
+
+  } catch ( err ) {
+    done( err, null, null );
+  }
+}
+
+/**
+ * @callback listFromFriendsCallback
+ * @param {Error} err - Error object
+ * @param {Array.<object>} tweets - list of friends' Tweet objects
+ * @param {number} count - total number of elements that match query before offset and limit
+ */
+
+/**
+ * Gets a list of Friends' Tweet objects.
+ *
+ * @param {object} data
+ * @param {string} [data.user] - User._id
+ * @param {object} [data.projection] -
+ * @param {boolean} [data.projection.timestamps] -
+ * @param {object} [data.sort] -
+ * @param {number} [data.timestamps.created] -
+ * @param {number} [data.offset=0] -
+ * @param {number} [data.limit=0] -
+ * @param {listFromMentionsCallback} done - callback
+ */
+function listFromFriends( data, done ) {
   try {
 
     var userCriteria = Utils.validateObject( data, {

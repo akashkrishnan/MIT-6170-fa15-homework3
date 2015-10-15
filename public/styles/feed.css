@@ -34,7 +34,7 @@
 }
 
 [feed] [tweet] [header] [time] {
-  display: none;
+  /*display: none;*/
 }
 
 [feed] [tweet] [header] [remove-tweet] {

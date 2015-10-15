@@ -73,8 +73,6 @@ function list( data, done ) {
         // Add ourselves to users
         users.push( criteria[ 'user' ] );
 
-        console.log( users );
-
         // Get list of mentions for all users
         db[ 'mentions' ]
           .find( { mention: { $in: users } } )
@@ -88,8 +86,6 @@ function list( data, done ) {
               var mention_tweets = mentions.map( function ( mention ) {
                 return ObjectId( mention.tweet );
               } );
-
-              console.log( mentions );
 
               var criteria = {
                 $or: [

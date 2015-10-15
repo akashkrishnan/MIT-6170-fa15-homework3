@@ -5,11 +5,11 @@ var Utils = require( './utils.js' );
 var User = require( './user.js' );
 var mongojs = require( 'mongojs' );
 
-var db = mongojs( Config.services.db.mongodb.uri, [ 'followers' ] );
+var db = mongojs( Config.services.db.mongodb.uri, [ 'friends' ] );
 
-db[ 'followers' ].createIndex( { 'follower': 1, 'followee': 1 }, {} );
-db[ 'followers' ].createIndex( { 'follower': 1, 'timestamps.created': 1 }, {} );
-db[ 'followers' ].createIndex( { 'followee': 1, 'timestamps.created': 1 }, {} );
+db[ 'friends' ].createIndex( { 'follower': 1, 'followee': 1 }, {} );
+db[ 'friends' ].createIndex( { 'follower': 1, 'timestamps.created': 1 }, {} );
+db[ 'friends' ].createIndex( { 'followee': 1, 'timestamps.created': 1 }, {} );
 
 module.exports = {
 
@@ -40,12 +40,12 @@ function list( data, done ) {
 
     // TODO: ENSURE VALID FOLLOWER OR FOLLOWEE?
 
-    db[ 'followers' ].count( criteria, function ( err, count ) {
+    db[ 'friends' ].count( criteria, function ( err, count ) {
       if ( err ) {
         done( err, null, null );
       } else {
 
-        db[ 'followers' ].find( criteria, function ( err, followers ) {
+        db[ 'friends' ].find( criteria, function ( err, followers ) {
           if ( err ) {
             done( err, null, null );
           } else {
@@ -69,7 +69,7 @@ function get( data, done ) {
       followee: { type: 'string', required: true }
     } );
 
-    db[ 'followers' ].findOne( criteria, function ( err, follower ) {
+    db[ 'friends' ].findOne( criteria, function ( err, follower ) {
       if ( err ) {
         done( err );
       } else if ( follower ) {
@@ -118,7 +118,7 @@ function add( data, done ) {
                 } else {
 
                   // Insert follower into database
-                  db[ 'followers' ].insert( criteria, function ( err ) {
+                  db[ 'friends' ].insert( criteria, function ( err ) {
                     if ( err ) {
                       done( err, null );
                     } else {
@@ -168,7 +168,7 @@ function remove( data, done ) {
       } else {
 
         // Delete follower from database
-        db[ 'followers' ].remove( criteria, true, function ( err ) {
+        db[ 'friends' ].remove( criteria, true, function ( err ) {
           if ( err ) {
             done( err, null );
           } else {
