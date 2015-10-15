@@ -1,7 +1,7 @@
 (function () {
 
   // Add keyup listener for enter/return inside of the form
-  document.querySelector( '[form]' ).addEventListener( 'keyup', function ( e ) {
+  document.querySelector( '#password' ).addEventListener( 'keyup', function ( e ) {
 
     // Check if Enter/Return
     if ( e.keyCode === 13 ) {

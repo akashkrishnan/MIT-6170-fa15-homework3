@@ -196,8 +196,9 @@ function userProfile( req, res, next ) {
             } else {
               res.render( 'user', {
                 web: Config.web,
-                self: req.user,
+                self: {},
                 user: user,
+                following: false,
                 tweets: tweets
               } );
             }

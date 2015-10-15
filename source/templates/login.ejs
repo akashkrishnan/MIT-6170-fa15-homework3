@@ -15,7 +15,18 @@
   <body fullbleed fit>
 
     <div masthead layout-horizontal layout-center shadow elevation="1">
+
       <div name layout-horizontal layout-center layout-center-justified><strong><%= web.name %></strong></div>
+
+      <a href="/" tab layout-horizontal layout-center active>
+        <div>Home</div>
+        <div underline></div>
+      </a>
+
+      <div flex></div>
+
+      <input id="search" placeholder="Enter username to view profile..."/>
+
     </div>
 
     <div content>
@@ -49,6 +60,7 @@
       </div>
     </div>
 
+    <script src="./controllers/scaffoldController.js"></script>
     <script src="./controllers/loginController.js"></script>
 
   </body>

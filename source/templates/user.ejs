@@ -24,6 +24,8 @@
         <div underline></div>
       </a>
 
+      <% if ( self._id ) { %>
+
       <a href="/mentions" tab layout-horizontal layout-center>
         <div>Mentions</div>
         <div underline></div>
@@ -34,14 +36,20 @@
         <div underline></div>
       </a>
 
+      <% } %>
+
       <div flex></div>
 
       <input id="search" placeholder="Enter username to view profile..."/>
+
+      <% if ( self._id ) { %>
 
       <a href="/logout" tab layout-horizontal layout-center>
         <div>Logout</div>
         <div underline></div>
       </a>
+
+      <% } %>
 
     </div>
 
