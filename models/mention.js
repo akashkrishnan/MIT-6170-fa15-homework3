@@ -213,7 +213,7 @@ function extract( msg, done ) {
   // Loop through mentions and keep track of ids of valid usernames
   (function next( i, n ) {
     if ( i < n ) {
-      User.get( { username: mentions[ i ] }, function ( err, user ) {
+      User.get( { username: mentions[ i ].substring( 1 ) }, function ( err, user ) {
         if ( user ) {
           ids.push( user._id );
         }
