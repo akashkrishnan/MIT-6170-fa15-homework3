@@ -96,50 +96,57 @@ function add( data, done ) {
       created: new Date()
     };
 
-    // Ensure user is not already following followee
-    get( criteria, function ( err ) {
-      if ( err ) {
+    // Ensure follower and followee are different
+    if ( follower === followee ) {
+      done( new Error( 'You cannot follow yourself.' ), null );
+    } else {
 
-        // Ensure valid follower
-        User.get( { _id: criteria.follower }, function ( err ) {
-          if ( err ) {
-            done( err, null );
-          } else {
+      // Ensure user is not already following followee
+      get( criteria, function ( err ) {
+        if ( err ) {
 
-            // Ensure valid followee
-            User.get( { _id: criteria.followee }, function ( err ) {
-              if ( err ) {
-                done( err, null );
-              } else {
+          // Ensure valid follower
+          User.get( { _id: criteria.follower }, function ( err ) {
+            if ( err ) {
+              done( err, null );
+            } else {
 
-                // Insert follower into database
-                db[ 'followers' ].insert( criteria, function ( err ) {
-                  if ( err ) {
-                    done( err, null );
-                  } else {
+              // Ensure valid followee
+              User.get( { _id: criteria.followee }, function ( err ) {
+                if ( err ) {
+                  done( err, null );
+                } else {
 
-                    // Properly get follower
-                    get( criteria, function ( err, follower ) {
-                      if ( err ) {
-                        done( err, null );
-                      } else {
-                        done( null, follower );
-                      }
-                    } );
+                  // Insert follower into database
+                  db[ 'followers' ].insert( criteria, function ( err ) {
+                    if ( err ) {
+                      done( err, null );
+                    } else {
 
-                  }
-                } );
+                      // Properly get follower
+                      get( criteria, function ( err, follower ) {
+                        if ( err ) {
+                          done( err, null );
+                        } else {
+                          done( null, follower );
+                        }
+                      } );
 
-              }
-            } );
+                    }
+                  } );
 
-          }
-        } );
+                }
+              } );
 
-      } else {
-        done( new Error( 'User already followed.' ) );
-      }
-    } );
+            }
+          } );
+
+        } else {
+          done( new Error( 'User already followed.' ) );
+        }
+      } );
+
+    }
 
   } catch ( err ) {
     done( err, null );
