@@ -27,9 +27,7 @@
       if ( e.target.hasAttribute( 'remove-tweet' ) ) {
         e.preventDefault();
         fritter.tweet.remove(
-          {
-            _id: e.target.parentElement.parentElement.id
-          },
+          { _id: e.target.parentElement.parentElement.id },
           function ( err, tweet ) {
             if ( err ) {
               console.error( err );
@@ -58,9 +56,9 @@
     html += '<div text>' + tweet.text + '</div>';
     html += '</div>';
 
-    var feed = document.querySelector( '[feed]' );
+    var feed = document.querySelector( '[feed] [list]' );
     if ( feed ) {
-      feed.insertAdjacentHTML( 'afterbegin', html );
+      feed.insertAdjacentHTML( 'afterend', html );
     }
 
   };

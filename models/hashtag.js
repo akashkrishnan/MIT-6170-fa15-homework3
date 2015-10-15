@@ -26,7 +26,7 @@ module.exports = {
 /**
  * @callback listCallback
  * @param {Error} err - Error object
- * @param {Array.<ObjectId>} hashtags - list of hashtags
+ * @param {Array.<object>} hashtags - list of Hashtag objects
  * @param {number} count -
  */
 
@@ -101,7 +101,7 @@ function list( data, done ) {
  * Adds tweet hashtags.
  *
  * @param {object} data -
- * @param {string} data.tweet._id - Tweet._id
+ * @param {string} data.tweet - Tweet._id
  * @param {Array.<string>} data.hashtags - list of mentioned hashtags with #
  * @param {addAllCallback} done - callback
  */
@@ -109,7 +109,7 @@ function addAll( data, done ) {
   try {
 
     var criteria = Utils.validateObject( data, {
-      'tweet._id': { type: 'string', required: true },
+      tweet: { type: 'string', required: true },
       hashtags: { required: true },
       'timestamps.created': { required: true }
     } );
@@ -124,7 +124,7 @@ function addAll( data, done ) {
         // Add remove queries
         criteria.hashtags.forEach( function ( hashtag ) {
           bulk.insert( {
-            tweet: { _id: criteria[ 'tweet._id' ] },
+            tweet: criteria.tweet,
             hashtag: hashtag,
             timestamps: { created: criteria[ 'timestamps.created' ] }
           } );
@@ -170,11 +170,11 @@ function removeAll( data, done ) {
   try {
 
     var criteria = Utils.validateObject( data, {
-      'tweet._id': { type: 'string', required: true }
+      tweet: { type: 'string', required: true }
     } );
 
     // Remove mentions from database
-    db[ 'hashtags' ].remove( { tweet: { _id: criteria[ 'tweet._id' ] } }, false, function ( err ) {
+    db[ 'hashtags' ].remove( criteria, false, function ( err ) {
       if ( err ) {
         done( err );
       } else {
@@ -188,11 +188,18 @@ function removeAll( data, done ) {
 }
 
 /**
+ * @callback extractCallback
+ * @param {Error} err - Error object
+ * @param {Array.<string>} hashtags - list of unique hashtags
+ */
+
+/**
  * Extracts a list of unique hashtags in the provided message string.
  *
  * @param {string} msg - message string to extract hashtags from
- * @returns {Array.<string>} - list of unique hashtags
+ * @param {extractCallback} done - callback
  */
-function extract( msg ) {
-  return Utils.unique( msg.match( /\S*#(?:\[[^\]]+\]|\S+)/gi ) || [] );
+function extract( msg, done ) {
+  var hashtags = Utils.unique( msg.match( /\S*#(?:\[[^\]]+\]|\S+)/gi ) || [] );
+  done( null, hashtags );
 }

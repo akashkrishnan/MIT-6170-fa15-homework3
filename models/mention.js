@@ -177,7 +177,7 @@ function removeAll( data, done ) {
     } );
 
     // Remove mentions from database
-    db[ 'mentions' ].remove( { tweet: criteria.tweet }, false, function ( err ) {
+    db[ 'mentions' ].remove( criteria, false, function ( err ) {
       if ( err ) {
         done( err );
       } else {

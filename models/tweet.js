@@ -11,7 +11,7 @@ var htmlEscape = require( 'escape-html' );
 
 var db = mongojs( Config.services.db.mongodb.uri, [ 'tweets' ] );
 
-db[ 'tweets' ].createIndex( { 'user._id': 1, 'timestamps.created': 1 }, {} );
+db[ 'tweets' ].createIndex( { user: 1, 'timestamps.created': 1 }, {} );
 
 module.exports = {
 
@@ -243,8 +243,6 @@ function get( data, done ) {
  * @callback addCallback
  * @param {Error} err - Error object
  * @param {object} tweet - newly added Tweet object
- * @param {Array.<string>} mentions - list of mentions
- * @param {Array.<string>} hashtags - list of hashtags
  */
 
 /**
@@ -263,61 +261,77 @@ function add( data, done ) {
       text: { type: 'string', required: true }
     } );
 
-    var mentions = Mention.extract( insertData.text );
-    var hashtags = Hashtag.extract( insertData.text );
-
-    var now = new Date();
-
-    insertData.text = htmlEscape( insertData.text );
-
-    insertData.timestamps = {
-      created: now
-    };
-
-    // Ensure valid user
-    User.get( { _id: insertData.user }, function ( err, user ) {
+    Mention.extract( insertData.text, function ( err, mentions ) {
       if ( err ) {
-        done( err, null, null, null );
+        done( err, null );
       } else {
 
-        // NOTE: BECAUSE THE FOLLOWING ARE STORED AND CAN CHANGE, THESE NEED TO BE UPDATED ON CHANGE
-        insertData.user.name = user.name;
-        insertData.user.username = user.username;
-
-        // Insert into database
-        db[ 'tweets' ].insert( insertData, function ( err, tweet ) {
+        Hashtag.extract( insertData.text, function ( err, hashtags ) {
           if ( err ) {
-            done( err, null, null, null )
+            done( err, null );
           } else {
 
-            // Add mentions
-            Mention.addAll(
-              {
-                tweet: tweet._id.toString(),
-                mentions: mentions,
-                'timestamps.created': insertData.timestamps.created
-              },
-              Utils.safeFn( function () {
+            var now = new Date();
 
-                // NOTE: Continue even if an error occurred
+            insertData.text = htmlEscape( insertData.text );
 
-                // Add hashtags
-                Hashtag.addAll(
-                  {
-                    tweet: tweet._id.toString(),
-                    hashtags: hashtags,
-                    'timestamps.created': insertData.timestamps.created
-                  },
-                  Utils.safeFn( function () {
+            insertData.timestamps = {
+              created: now
+            };
 
-                    // NOTE: Continue even if an error occurred
-                    done( null, tweet, mentions, hashtags );
+            // Ensure valid user
+            User.get( { _id: insertData.user }, function ( err, user ) {
+              if ( err ) {
+                done( err, null, null, null );
+              } else {
 
-                  } )
-                );
+                // NOTE: BECAUSE THE FOLLOWING ARE STORED AND CAN CHANGE, THESE NEED TO BE UPDATED ON CHANGE
+                insertData.user = {
+                  _id: user._id,
+                  name: user.name,
+                  username: user.username
+                };
 
-              } )
-            );
+                // Insert into database
+                db[ 'tweets' ].insert( insertData, function ( err, tweet ) {
+                  if ( err ) {
+                    done( err, null, null, null )
+                  } else {
+
+                    // Add mentions
+                    Mention.addAll(
+                      {
+                        tweet: tweet._id.toString(),
+                        mentions: mentions,
+                        'timestamps.created': insertData.timestamps.created
+                      },
+                      Utils.safeFn( function () {
+
+                        // NOTE: Continue even if an error occurred
+
+                        // Add hashtags
+                        Hashtag.addAll(
+                          {
+                            tweet: tweet._id.toString(),
+                            hashtags: hashtags,
+                            'timestamps.created': insertData.timestamps.created
+                          },
+                          Utils.safeFn( function () {
+
+                            // NOTE: Continue even if an error occurred
+                            done( null, tweet, mentions, hashtags );
+
+                          } )
+                        );
+
+                      } )
+                    );
+
+                  }
+                } );
+
+              }
+            } );
 
           }
         } );
@@ -326,7 +340,7 @@ function add( data, done ) {
     } );
 
   } catch ( err ) {
-    done( err, null, null, null );
+    done( err, null );
   }
 }
 

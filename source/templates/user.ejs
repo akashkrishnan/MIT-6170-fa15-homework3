@@ -96,28 +96,32 @@
               <div>Tweets</div>
             </div>
 
-            <% tweets.forEach( function( tweet ) { %>
+            <div list>
 
-            <div id="<%= tweet._id %>" tweet layout-vertical>
+              <% tweets.forEach( function( tweet ) { %>
 
-              <div header layout-horizontal>
+              <div id="<%= tweet._id %>" tweet layout-vertical>
 
-                <span author-name><strong><%= tweet.user.name %></strong></span>
-                <a author-handle href="/<%= tweet.user.username %>">@<%= tweet.user.username %></a>
-                <span time><%= tweet.timestamps.created %></span>
-                <span flex></span>
+                <div header layout-horizontal>
 
-                <% if ( tweet.user.username === self.username ) { %>
-                <span remove-tweet>X</span>
-                <% } %>
+                  <span author-name><strong><%= tweet.user.name %></strong></span>
+                  <a author-handle href="/<%= tweet.user.username %>">@<%= tweet.user.username %></a>
+                  <span time><%= tweet.timestamps.created %></span>
+                  <span flex></span>
+
+                  <% if ( tweet.user.username === self.username ) { %>
+                  <span remove-tweet>X</span>
+                  <% } %>
+
+                </div>
+
+                <div text><%= tweet.text %></div>
 
               </div>
 
-              <div text><%= tweet.text %></div>
+              <% } ); %>
 
             </div>
-
-            <% } ); %>
 
           </div>
 
