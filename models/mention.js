@@ -2,6 +2,7 @@
 
 var Config = require( '../config.js' );
 var Utils = require( './utils.js' );
+var User = require( './user.js' );
 var mongojs = require( 'mongojs' );
 
 var db = mongojs( Config.services.db.mongodb.uri, [ 'mentions' ] );
@@ -34,7 +35,7 @@ module.exports = {
  * Gets a list of mentions.
  *
  * @param {object} data -
- * @param {string} data.mention - User.username with @
+ * @param {string} data.mention - User._id
  * @param {object} [data.projection] -
  * @param {boolean} [data.projection.timestamps] -
  * @param {object} [data.sort] -
@@ -101,15 +102,15 @@ function list( data, done ) {
  * Adds tweet mentions.
  *
  * @param {object} data -
- * @param {string} data.tweet._id - Tweet._id
- * @param {Array.<string>} data.mentions - list of mentioned usernames with @
+ * @param {string} data.tweet - Tweet._id
+ * @param {Array.<string>} data.mentions - list of mentioned User._id
  * @param {addAllCallback} done - callback
  */
 function addAll( data, done ) {
   try {
 
     var criteria = Utils.validateObject( data, {
-      'tweet._id': { type: 'string', required: true },
+      tweet: { type: 'string', required: true },
       mentions: { required: true },
       'timestamps.created': { required: true }
     } );
@@ -124,9 +125,11 @@ function addAll( data, done ) {
         // Add remove queries
         criteria.mentions.forEach( function ( mention ) {
           bulk.insert( {
-            tweet: { _id: criteria[ 'tweet._id' ] },
+            tweet: criteria.tweet,
             mention: mention,
-            timestamps: { created: criteria[ 'timestamps.created' ] }
+            timestamps: {
+              created: criteria[ 'timestamps.created' ]
+            }
           } );
         } );
 
@@ -162,19 +165,19 @@ function addAll( data, done ) {
 /**
  * Removes all mentions associated with the specified tweet.
  *
- * @param {object} data
- * @param {string} data.tweet._id
+ * @param {object} data -
+ * @param {string} data.tweet - Tweet._id
  * @param {removeAllCallback} done - callback
  */
 function removeAll( data, done ) {
   try {
 
     var criteria = Utils.validateObject( data, {
-      'tweet._id': { type: 'string', required: true }
+      tweet: { type: 'string', required: true }
     } );
 
     // Remove mentions from database
-    db[ 'mentions' ].remove( { tweet: { _id: criteria[ 'tweet._id' ] } }, false, function ( err ) {
+    db[ 'mentions' ].remove( { tweet: criteria.tweet }, false, function ( err ) {
       if ( err ) {
         done( err );
       } else {
@@ -188,14 +191,37 @@ function removeAll( data, done ) {
 }
 
 /**
- * Extracts a list of unique mentions in the provided message string.
- *
- * TODO: ENSURE VALID USERNAMES
- * TODO: RETRIEVE USER ID?
+ * @callback extractCallback
+ * @param {Error} err - Error object
+ * @param {Array.<string>} mentions - list of unique User._id that were mentioned by @User.username
+ */
+
+/**
+ * Extracts a list of unique & valid mentions in the provided message string.
  *
  * @param {string} msg - message string to extract mentions from
- * @returns {Array.<string>} - list of unique mentions
+ * @param {extractCallback} done - callback
  */
-function extract( msg ) {
-  return Utils.unique( msg.match( /\B@[a-z0-9_-]+/gi ) || [] );
+function extract( msg, done ) {
+
+  // Keep track of valid mentioned User._id
+  var ids = [];
+
+  // Get list of unique mentioned usernames (this includes the @)
+  var mentions = Utils.unique( msg.match( /\B@[a-z0-9_-]+/gi ) || [] );
+
+  // Loop through mentions and keep track of ids of valid usernames
+  (function next( i, n ) {
+    if ( i < n ) {
+      User.get( { username: mentions[ i ] }, function ( err, user ) {
+        if ( user ) {
+          ids.push( user._id );
+        }
+        next( i + 1, n );
+      } );
+    } else {
+      done( null, ids );
+    }
+  })( 0, mentions.length );
+
 }

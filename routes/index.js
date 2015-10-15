@@ -4,6 +4,7 @@ var Config = require( '../config.js' );
 var Utils = require( '../models/utils.js' );
 var Session = require( '../models/session.js' );
 var User = require( '../models/user.js' );
+var Feed = require( '../models/feed.js' );
 var Tweet = require( '../models/tweet.js' );
 var Follower = require( '../models/follower.js' );
 
@@ -38,10 +39,10 @@ function config( req, res ) {
 function index( req, res ) {
   if ( req.user ) {
 
-    // Get tweets
-    Tweet.list(
+    // Get tweets in feed
+    Feed.list(
       {
-        'user._id': req.user._id,
+        user: req.user._id,
         limit: 20
       },
       Utils.safeFn( function ( err, tweets ) {
@@ -107,7 +108,7 @@ function mentions( req, res, next ) {
     // Get tweets
     Tweet.listMentions(
       {
-        'user._id': req.user._id,
+        user: req.user._id,
         limit: 20
       },
       Utils.safeFn( function ( err, tweets ) {
@@ -136,7 +137,7 @@ function followers( req, res, next ) {
     // Get tweets
     Tweet.list(
       {
-        'user._id': req.user._id,
+        user: req.user._id,
         limit: 20
       },
       Utils.safeFn( function ( err, tweets ) {
@@ -171,7 +172,7 @@ function userProfile( req, res, next ) {
       // Get tweets
       Tweet.list(
         {
-          'user._id': user._id,
+          user: user._id,
           limit: 20
         },
         Utils.safeFn( function ( err, tweets ) {
@@ -291,7 +292,7 @@ function apiTweetAdd( req, res ) {
   if ( req.user ) {
 
     // Ensure some properties
-    req.body[ 'user._id' ] = req.user._id;
+    req.body.user = req.user._id;
 
     // Add tweet
     Tweet.add( req.body, Utils.safeFn( function ( err, tweet ) {
@@ -314,7 +315,7 @@ function apiTweetRemove( req, res ) {
   if ( req.user ) {
 
     // Ensure some properties
-    req.params[ 'user._id' ] = req.user._id;
+    req.params.user = req.user._id;
 
     // Add tweet
     Tweet.remove( req.params, Utils.safeFn( function ( err, tweet ) {
@@ -337,7 +338,7 @@ function apiTweetRetweet( req, res ) {
   if ( req.user ) {
 
     // Ensure some properties
-    req.params[ 'user._id' ] = req.user._id;
+    req.params.user = req.user._id;
 
     res.json( { err: 'Not implemented.' } );
 
@@ -353,7 +354,7 @@ function apiUserFollow( req, res ) {
   if ( req.user ) {
 
     // Ensure some properties
-    req.params[ 'follower' ] = req.user._id;
+    req.params.follower = req.user._id;
 
     // Add tweet
     Follower.add( req.params, Utils.safeFn( function ( err, follower ) {
@@ -376,7 +377,7 @@ function apiUserUnfollow( req, res ) {
   if ( req.user ) {
 
     // Ensure some properties
-    req.params[ 'follower' ] = req.user._id;
+    req.params.follower = req.user._id;
 
     // Add tweet
     Follower.remove( req.params, Utils.safeFn( function ( err, follower ) {

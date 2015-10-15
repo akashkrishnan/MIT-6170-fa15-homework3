@@ -36,7 +36,7 @@ module.exports = {
  * Gets a list of Tweet objects.
  *
  * @param {object} data
- * @param {string} [data.user._id] - User._id
+ * @param {string} [data.user] - User._id
  * @param {object} [data.projection] -
  * @param {boolean} [data.projection.timestamps] -
  * @param {object} [data.sort] -
@@ -49,7 +49,7 @@ function list( data, done ) {
   try {
 
     var criteria = Utils.validateObject( data, {
-      'user._id': { type: 'string', required: true }
+      user: { type: 'string', required: true }
     } );
 
     var projection = Utils.validateObject( data, {
@@ -105,7 +105,7 @@ function list( data, done ) {
  * Gets a list of mentioned Tweet objects.
  *
  * @param {object} data
- * @param {string} [data.user._id] - User._id
+ * @param {string} [data.user] - User._id
  * @param {object} [data.projection] -
  * @param {boolean} [data.projection.timestamps] -
  * @param {object} [data.sort] -
@@ -118,7 +118,7 @@ function listMentions( data, done ) {
   try {
 
     var userCriteria = Utils.validateObject( data, {
-      'user._id': { type: 'string', required: true }
+      user: { type: 'string', required: true }
     } );
 
     var projection = Utils.validateObject( data, {
@@ -141,14 +141,14 @@ function listMentions( data, done ) {
     } ).sort;
 
     // Ensure valid user
-    User.get( { _id: userCriteria[ 'user._id' ] }, function ( err, user ) {
+    User.get( { _id: userCriteria.user }, function ( err, user ) {
       if ( err ) {
         done( err, null, null );
       } else {
 
         Mention.list(
           {
-            mention: '@' + user.username,
+            mention: user._id,
             projection: {
               timestamps: false
             },
@@ -163,7 +163,7 @@ function listMentions( data, done ) {
 
               // Retrieve list of Tweet._id
               var ids = mentions.map( function ( mention ) {
-                return ObjectId( mention.tweet._id );
+                return ObjectId( mention.tweet );
               } );
 
               var criteria = { _id: { $in: ids } };
@@ -201,7 +201,7 @@ function listMentions( data, done ) {
  *
  * @param {object} data -
  * @param {*} data._id - Tweet._id
- * @param {string} [data.user._id] - User._id
+ * @param {string} [data.user] - User._id
  * @param {object} [data.projection] -
  * @param {boolean} [data.projection.timestamps] -
  * @param {getCallback} done - callback
@@ -210,8 +210,8 @@ function get( data, done ) {
   try {
 
     var criteria = Utils.validateObject( data, {
-      '_id': { filter: 'MongoId', required: true },
-      'user._id': { type: 'string' }
+      _id: { filter: 'MongoId', required: true },
+      user: { type: 'string' }
     } );
 
     var projection = Utils.validateObject( data, {
@@ -251,18 +251,15 @@ function get( data, done ) {
  * Adds a Tweet object.
  *
  * @param {object} data -
- * @param {string} data.user._id - User._id
+ * @param {string} data.user - User._id
  * @param {string} data.text - message of new tweet
  * @param {addCallback} done - callback
  */
 function add( data, done ) {
   try {
 
-    var criteria = Utils.validateObject( data, {
-      'user._id': { type: 'string', required: true }
-    } );
-
     var insertData = Utils.validateObject( data, {
+      user: { type: 'string', required: true },
       text: { type: 'string', required: true }
     } );
 
@@ -273,22 +270,17 @@ function add( data, done ) {
 
     insertData.text = htmlEscape( insertData.text );
 
-    insertData.user = {
-      _id: criteria[ 'user._id' ]
-    };
-
     insertData.timestamps = {
-      created: now,
-      modified: now,
-      removed: null
+      created: now
     };
 
     // Ensure valid user
-    User.get( { _id: insertData.user._id }, function ( err, user ) {
+    User.get( { _id: insertData.user }, function ( err, user ) {
       if ( err ) {
         done( err, null, null, null );
       } else {
 
+        // NOTE: BECAUSE THE FOLLOWING ARE STORED AND CAN CHANGE, THESE NEED TO BE UPDATED ON CHANGE
         insertData.user.name = user.name;
         insertData.user.username = user.username;
 
@@ -301,7 +293,7 @@ function add( data, done ) {
             // Add mentions
             Mention.addAll(
               {
-                'tweet._id': tweet._id.toString(),
+                tweet: tweet._id.toString(),
                 mentions: mentions,
                 'timestamps.created': insertData.timestamps.created
               },
@@ -312,7 +304,7 @@ function add( data, done ) {
                 // Add hashtags
                 Hashtag.addAll(
                   {
-                    'tweet._id': tweet._id.toString(),
+                    tweet: tweet._id.toString(),
                     hashtags: hashtags,
                     'timestamps.created': insertData.timestamps.created
                   },
@@ -349,15 +341,15 @@ function add( data, done ) {
  *
  * @param {object} data -
  * @param {*} data._id - Tweet._id
- * @param {string} [data.user._id] - User._id
+ * @param {string} [data.user] - User._id
  * @param {removeCallback} done - callback
  */
 function remove( data, done ) {
   try {
 
     var criteria = Utils.validateObject( data, {
-      '_id': { filter: 'MongoId', required: true },
-      'user._id': { type: 'string' }
+      _id: { filter: 'MongoId', required: true },
+      user: { type: 'string' }
     } );
 
     // Ensure valid tweet
@@ -367,13 +359,13 @@ function remove( data, done ) {
       } else {
 
         // Remove associated mentions
-        Mention.removeAll( { 'tweet._id': tweet._id.toString() }, function ( err ) {
+        Mention.removeAll( { tweet: tweet._id.toString() }, function ( err ) {
           if ( err ) {
             done( err, null );
           } else {
 
             // Remove associated hashtags
-            Hashtag.removeAll( { 'tweet._id': tweet._id.toString() }, function ( err ) {
+            Hashtag.removeAll( { tweet: tweet._id.toString() }, function ( err ) {
               if ( err ) {
                 done( err, null );
               } else {
