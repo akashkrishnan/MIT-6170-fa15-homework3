@@ -97,7 +97,7 @@ function add( data, done ) {
     };
 
     // Ensure follower and followee are different
-    if ( follower === followee ) {
+    if ( criteria.follower === criteria.followee ) {
       done( new Error( 'You cannot follow yourself.' ), null );
     } else {
 
