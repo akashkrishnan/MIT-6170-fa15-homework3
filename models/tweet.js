@@ -49,7 +49,7 @@ function list( data, done ) {
   try {
 
     var criteria = Utils.validateObject( data, {
-      user: { type: 'string', required: true }
+      user: { name: 'user._id', type: 'string', required: true }
     } );
 
     var projection = Utils.validateObject( data, {
@@ -211,7 +211,7 @@ function get( data, done ) {
 
     var criteria = Utils.validateObject( data, {
       _id: { filter: 'MongoId', required: true },
-      user: { type: 'string' }
+      user: { name: 'user._id', type: 'string' }
     } );
 
     var projection = Utils.validateObject( data, {
@@ -223,6 +223,8 @@ function get( data, done ) {
         default: {} // TODO: DEFAULT TO MINIMAL PROJECTION
       }
     } ).projection;
+
+    console.log( criteria );
 
     db[ 'tweets' ].findOne( criteria, projection, function ( err, tweet ) {
       if ( err ) {
@@ -365,6 +367,8 @@ function remove( data, done ) {
       _id: { filter: 'MongoId', required: true },
       user: { type: 'string' }
     } );
+
+    console.log( criteria );
 
     // Ensure valid tweet
     get( criteria, function ( err, tweet ) {

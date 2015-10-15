@@ -4,6 +4,7 @@ var Config = require( '../config.js' );
 var Utils = require( './utils.js' );
 var Follower = require( './follower.js' );
 var mongojs = require( 'mongojs' );
+var ObjectId = mongojs.ObjectId;
 
 var db = mongojs( Config.services.db.mongodb.uri, [ 'mentions', 'tweets' ] );
 
@@ -49,6 +50,15 @@ function list( data, done ) {
       }
     } ).projection;
 
+    var sort = Utils.validateObject( data, {
+      sort: {
+        type: {
+          'timestamps.created': { type: 'number' }
+        },
+        default: { 'timestamps.created': -1 }
+      }
+    } ).sort;
+
     // Get list of users we follow
     Follower.list( { follower: criteria.user }, function ( err, followers ) {
       if ( err ) {
@@ -63,25 +73,27 @@ function list( data, done ) {
         // Add ourselves to users
         users.push( criteria[ 'user' ] );
 
+        console.log( users );
+
         // Get list of mentions for all users
-        db[ 'mentions' ].find(
-          {
-            mention: { $in: users },
-            limit: data.limit
-          },
-          function ( err, mentions ) {
+        db[ 'mentions' ]
+          .find( { mention: { $in: users } } )
+          .sort( sort )
+          .limit( data.limit, function ( err, mentions ) {
             if ( err ) {
               done( err, null, null );
             } else {
 
               // Convert to list of Tweet._id
               var mention_tweets = mentions.map( function ( mention ) {
-                return mention.tweet;
+                return ObjectId( mention.tweet );
               } );
+
+              console.log( mentions );
 
               var criteria = {
                 $or: [
-                  { user: { $in: users } },
+                  { 'user._id': { $in: users } },
                   { _id: { $in: mention_tweets } }
                 ]
               };
@@ -94,6 +106,7 @@ function list( data, done ) {
                   // Get tweets for all users and mention_tweets
                   db[ 'tweets' ]
                     .find( criteria, projection )
+                    .sort( sort )
                     .limit( data.limit || 0, function ( err, tweets ) {
                       if ( err ) {
                         done( err, null, null );
