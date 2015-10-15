@@ -72,11 +72,11 @@
               <div title>Profile</div>
               <div flex></div>
 
-              <% if ( self && !following ) { %>
+              <% if ( self._id && !following ) { %>
               <div button follow><span>Follow</span></div>
               <% } %>
 
-              <% if ( self && following ) { %>
+              <% if ( self._id && following ) { %>
               <div button follow active><span>Following</span></div>
               <% } %>
 
