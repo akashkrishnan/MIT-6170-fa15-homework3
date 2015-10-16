@@ -24,7 +24,6 @@
   var feed = document.querySelector( '[feed]' );
   if ( feed ) {
     feed.addEventListener( 'click', function ( e ) {
-
       if ( e.target.hasAttribute( 'remove-tweet' ) ) {
         e.preventDefault();
         fritter.tweet.remove(
@@ -52,7 +51,6 @@
           }
         );
       }
-
     } );
   }
 
@@ -65,10 +63,13 @@
     html += '<span author-name><strong>' + tweet.user.name + '</strong></span>';
     html += '<a author-handle href="/' + tweet.user.username + '">@' + tweet.user.username + '</a>';
     html += '<span time="' + tweet.timestamps.created + '">just now</span>';
-    html += '<span flex></span>';
-    html += '<span remove-tweet>X</span>';
     html += '</div>';
     html += '<div text>' + tweet.text + '</div>';
+    html += '<div footer layout-horizontal>';
+    html += '<span retweet-tweet disabled></span>';
+    html += '<span flex></span>';
+    html += '<span remove-tweet>Remove</span>';
+    html += '</div>';
     html += '</div>';
 
     var feed = document.querySelector( '[feed] [list]' );
