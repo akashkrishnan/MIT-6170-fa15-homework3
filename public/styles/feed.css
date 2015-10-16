@@ -37,11 +37,37 @@
   font-style: italic;
 }
 
-[feed] [tweet] [header] [remove-tweet] {
-  cursor: pointer;
-}
-
 [feed] [tweet] [text] {
   white-space: pre;
   word-wrap: break-word;
+  word-break: break-all;
+}
+
+[feed] [tweet] [footer] {
+  margin-top: 16px;
+}
+
+[feed] [tweet] [footer] [retweet-tweet] {
+  cursor: pointer;
+  content: url('/img/retweet.png');
+}
+
+[feed] [tweet] [footer] [retweet-tweet]:not([disabled]):hover {
+  cursor: pointer;
+  content: url('/img/retweet_hover.png');
+}
+
+[feed] [tweet] [footer] [retweet-tweet][active] {
+  cursor: pointer;
+  content: url('/img/retweet_on.png');
+}
+
+[feed] [tweet] [footer] [retweet-tweet][disabled] {
+  cursor: default;
+}
+
+[feed] [tweet] [footer] [remove-tweet] {
+  cursor: pointer;
+  font-size: 12px;
+  text-transform: uppercase;
 }

@@ -38,7 +38,7 @@
             }
           }
         );
-      } else if ( e.target.hasAttribute( 'retweet-tweet' ) ) {
+      } else if ( e.target.hasAttribute( 'retweet-tweet' ) && !e.target.hasAttribute( 'disabled' ) ) {
         e.preventDefault();
         fritter.tweet.retweet(
           { _id: e.target.parentElement.parentElement.id },

@@ -365,7 +365,7 @@ function add( data, done ) {
 
             var now = new Date();
 
-            insertData.text = htmlEscape( insertData.text );
+            insertData.text = htmlEscape( insertData.text.trim() );
 
             insertData.timestamps = {
               created: now

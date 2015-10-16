@@ -51,7 +51,7 @@ function index( req, res ) {
         } else {
           res.render( 'home', {
             web: Config.web,
-            user: req.user,
+            self: req.user,
             tweets: tweets
           } );
         }
@@ -118,7 +118,7 @@ function mentions( req, res, next ) {
         } else {
           res.render( 'mentions', {
             web: Config.web,
-            user: req.user,
+            self: req.user,
             tweets: tweets
           } );
         }
@@ -148,7 +148,7 @@ function friends( req, res, next ) {
         } else {
           res.render( 'friends', {
             web: Config.web,
-            user: req.user,
+            self: req.user,
             tweets: tweets
           } );
         }
@@ -341,6 +341,8 @@ function apiTweetRetweet( req, res ) {
 
     // Ensure some properties
     req.params.user = req.user._id;
+
+    console.log( 'test' );
 
     res.json( { err: 'Not implemented.' } );
 

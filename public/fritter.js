@@ -60,8 +60,8 @@ var Fritter = function () {
     },
 
     retweet: function ( data, done ) {
-      if ( data && data[ 'tweet._id' ] ) {
-        ajax( 'POST', '/api/tweet/' + data[ 'tweet._id' ] + '/retweet', data, function ( data ) {
+      if ( data && data._id ) {
+        ajax( 'POST', '/api/tweet/' + data._id + '/retweet', data, function ( data ) {
           if ( data ) {
             if ( data.err ) {
               done( data.err, null );
