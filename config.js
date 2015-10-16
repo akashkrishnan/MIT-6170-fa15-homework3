@@ -4,7 +4,7 @@ var Config = module.exports = {
   verbose: !!process.env.verbose,
   web: {
     name: 'Fritter',
-    version: '1.0.0',
+    version: '2.0.0',
     cookie: {
       name: 'apikey'
     },
