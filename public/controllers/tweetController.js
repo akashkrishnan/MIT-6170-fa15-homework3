@@ -73,7 +73,7 @@
 
     var feed = document.querySelector( '[feed] [list]' );
     if ( feed ) {
-      feed.insertAdjacentHTML( 'afterend', html );
+      feed.insertAdjacentHTML( 'afterbegin', html );
     }
 
   };
