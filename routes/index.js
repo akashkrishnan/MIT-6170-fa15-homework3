@@ -43,7 +43,7 @@ function index( req, res ) {
     Feed.list(
       {
         user: req.user._id,
-        limit: 20
+        limit: 0
       },
       Utils.safeFn( function ( err, tweets ) {
         if ( err ) {
@@ -110,7 +110,7 @@ function mentions( req, res, next ) {
     Tweet.listFromMentions(
       {
         user: req.user._id,
-        limit: 20
+        limit: 0
       },
       Utils.safeFn( function ( err, tweets ) {
         if ( err ) {
@@ -140,7 +140,7 @@ function friends( req, res, next ) {
     Tweet.listFromFriends(
       {
         user: req.user._id,
-        limit: 20
+        limit: 0
       },
       Utils.safeFn( function ( err, tweets ) {
         if ( err ) {
@@ -174,7 +174,7 @@ function userProfile( req, res, next ) {
       Tweet.list(
         {
           user: user._id,
-          limit: 20
+          limit: 0
         },
         Utils.safeFn( function ( err, tweets ) {
           if ( err ) {

@@ -64,7 +64,7 @@
     html += '<div header layout-horizontal>';
     html += '<span author-name><strong>' + tweet.user.name + '</strong></span>';
     html += '<a author-handle href="/' + tweet.user.username + '">@' + tweet.user.username + '</a>';
-    html += '<span time>' + tweet.timestamps.created + '</span>';
+    html += '<span time="' + tweet.timestamps.created + '">just now</span>';
     html += '<span flex></span>';
     html += '<span remove-tweet>X</span>';
     html += '</div>';

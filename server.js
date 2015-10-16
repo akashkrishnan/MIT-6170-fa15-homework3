@@ -35,6 +35,7 @@ d.run( function () {
   app.use( CookieParser() );
   app.use( BodyParser.json() );
   app.use( express.static( __dirname + '/public' ) );
+  app.use( express.static( __dirname + '/source/bower_components' ) );
   app.use( Session( Config.web.cookie.name ) );
 
   console.log( 'READY: Express' );

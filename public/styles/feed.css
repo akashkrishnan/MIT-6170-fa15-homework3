@@ -34,7 +34,7 @@
 }
 
 [feed] [tweet] [header] [time] {
-  /*display: none;*/
+  font-style: italic;
 }
 
 [feed] [tweet] [header] [remove-tweet] {
