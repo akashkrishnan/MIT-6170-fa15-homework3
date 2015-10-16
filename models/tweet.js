@@ -23,6 +23,7 @@ module.exports = {
   listFromFriends: listFromFriends,
   get: get,
   add: add,
+  retweet: retweet,
   remove: remove
 
 };
@@ -437,6 +438,75 @@ function add( data, done ) {
 }
 
 /**
+ * @callback retweetCallback
+ * @param {Error} err - Error object
+ * @param {object} tweet - new Tweet object from retweet
+ */
+
+/**
+ * Retweets a tweet by duplicating the original Tweet object and modifying it.
+ *
+ * TODO: MOVE RETWEET TO ITS OWN MODEL. RETWEETING IS MUCH MORE SOPHISTICATED THAN THIS...
+ *
+ * @param {object} data -
+ * @param {*} data._id - Tweet._id
+ * @param {*} data.user - User._id
+ * @param {retweetCallback} done - callback
+ */
+function retweet( data, done ) {
+  try {
+
+    var criteria = Utils.validateObject( data, {
+      _id: { filter: 'MongoId', required: true },
+      user: { type: 'string', required: true }
+    } );
+
+    // Ensure valid user
+    User.get( { _id: criteria.user }, function ( err ) {
+      if ( err ) {
+        done( err, null );
+      } else {
+
+        // Ensure valid tweet
+        get( { _id: criteria._id }, function ( err, tweet ) {
+          if ( err ) {
+            done( err, null );
+          } else {
+
+            // Ensure retweeting someone else's tweet
+            if ( tweet.user === criteria.user ) {
+              done( new Error( 'You cannot retweet your own tweet.' ) );
+            } else {
+
+              // Add new tweet
+              add(
+                {
+                  user: criteria.user,
+                  text: 'RT ' + tweet.user.name + ' @' + tweet.user.username + '\n\n' + tweet.text
+                },
+                function ( err, tweet ) {
+                  if ( err ) {
+                    done( err, null );
+                  } else {
+                    done( null, tweet );
+                  }
+                }
+              );
+
+            }
+
+          }
+        } );
+
+      }
+    } );
+
+  } catch ( err ) {
+    done( err, null );
+  }
+}
+
+/**
  * @callback removeCallback
  * @param {Error} err - Error object
  * @param {object} tweet - Tweet object before removal
@@ -457,8 +527,6 @@ function remove( data, done ) {
       _id: { filter: 'MongoId', required: true },
       user: { type: 'string' }
     } );
-
-    console.log( criteria );
 
     // Ensure valid tweet
     get( criteria, function ( err, tweet ) {

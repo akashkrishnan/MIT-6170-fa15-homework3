@@ -342,9 +342,14 @@ function apiTweetRetweet( req, res ) {
     // Ensure some properties
     req.params.user = req.user._id;
 
-    console.log( 'test' );
-
-    res.json( { err: 'Not implemented.' } );
+    // Retweet tweet
+    Tweet.retweet( req.params, Utils.safeFn( function ( err, tweet ) {
+      if ( err ) {
+        res.json( { err: err } );
+      } else {
+        res.json( tweet );
+      }
+    } ) );
 
   } else {
     res.status( 400 ).json( { err: 'Bad Request: User must be authenticated to process request.' } );
