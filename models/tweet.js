@@ -3,6 +3,7 @@
 var Config = require( '../config.js' );
 var Utils = require( './utils.js' );
 var User = require( './user.js' );
+var Follower = require( './follower.js' );
 var Mention = require( './mention.js' );
 var Hashtag = require( './hashtag.js' );
 var mongojs = require( 'mongojs' );
@@ -214,7 +215,7 @@ function listFromMentions( data, done ) {
 function listFromFriends( data, done ) {
   try {
 
-    var userCriteria = Utils.validateObject( data, {
+    var criteria = Utils.validateObject( data, {
       user: { type: 'string', required: true }
     } );
 
@@ -237,47 +238,39 @@ function listFromFriends( data, done ) {
       }
     } ).sort;
 
-    // Ensure valid user
-    User.get( { _id: userCriteria.user }, function ( err, user ) {
+    // Get list of users we follow
+    Follower.list( { follower: criteria.user }, function ( err, followers ) {
       if ( err ) {
         done( err, null, null );
       } else {
 
-        Mention.list(
-          {
-            mention: user._id,
-            projection: {
-              timestamps: false
-            },
-            sort: sort,
-            offset: data.offset,
-            limit: data.limit
-          },
-          function ( err, mentions, count ) {
-            if ( err ) {
-              done( err, null, null );
-            } else {
+        // Convert to a list of User._ids
+        var users = followers.map( function ( follower ) {
+          return follower.followee;
+        } );
 
-              // Retrieve list of Tweet._id
-              var ids = mentions.map( function ( mention ) {
-                return ObjectId( mention.tweet );
-              } );
+        var criteria = { 'user._id': { $in: users } };
 
-              var criteria = { _id: { $in: ids } };
+        db[ 'tweets' ].count( criteria, function ( err, count ) {
+          if ( err ) {
+            done( err, null, null );
+          } else {
 
-              db[ 'tweets' ]
-                .find( criteria, projection )
-                .sort( sort, function ( err, tweets ) {
-                  if ( err ) {
-                    done( err, null, null );
-                  } else {
-                    done( null, tweets, count );
-                  }
-                } );
+            // Get tweets for all users
+            db[ 'tweets' ]
+              .find( criteria, projection )
+              .sort( sort )
+              .limit( data.limit || 0, function ( err, tweets ) {
+                if ( err ) {
+                  done( err, null, null );
+                } else {
+                  done( null, tweets, count );
+                }
+              }
+            );
 
-            }
           }
-        );
+        } );
 
       }
     } );
